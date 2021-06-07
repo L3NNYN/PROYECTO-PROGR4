@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js"></script>
+
+    <link rel="manifest" href="/site.webmanifest">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/54635cbd22.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div id="app">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <div class="d-flex flex-column">
+                    <b-carousel
+                        id="carousel-fade"
+                        style="text-shadow: 0px 0px 2px #000"
+                        fade
+                        indicators
+                        img-width="1024"
+                        img-height="480"
+                    >
+                        <b-carousel-slide
+                        caption="First slide"
+                        img-src="https://picsum.photos/1024/480/?image=10"
+                        ></b-carousel-slide>
+                        <b-carousel-slide
+                        caption="Second Slide"
+                        img-src="https://picsum.photos/1024/480/?image=12"
+                        ></b-carousel-slide>
+                        <b-carousel-slide
+                        caption="Third Slide"
+                        img-src="https://picsum.photos/1024/480/?image=22"
+                        ></b-carousel-slide>
+                    </b-carousel>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</body>
+</html>

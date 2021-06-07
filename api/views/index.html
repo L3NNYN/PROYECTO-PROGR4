@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js"></script>
+
+    <link rel="manifest" href="/site.webmanifest">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/54635cbd22.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div id="app">
+        <div class="row">
+            <div id="index-info" class="col-6 d-flex align-items-center justify-content-center">
+                <!-- <h1><strong>Marketplace Multivendor</strong></h1> -->
+                <b-card-img src="./img/5865.jpg" alt="Image" class="rounded-0"></b-card-img>
+            </div>
+            <div id="index-form" class="col-6">
+                <b-form @submit="login" method="post" class="d-flex flex-row"> 
+                    <b-form-input size="md" id="nickname" name="nombre" v-model="form.nombre" type="text" required
+                                placeholder="Usuario" class="m-2"></b-form-input>
+                    <b-form-input size="md" id="password" name="password" v-model="form.password" placeholder="Password" class="m-2 p-2" required></b-form-input>
+                    <b-button size="sm" variant="outline-primary" name="submit" type="submit" class="m-2 p-2">Login</b-button>
+                </b-form>
+                <div class="d-flex align-items-center justify-content-center">
+                    <h2 class="mt-5">
+                        Busca
+                        <br>
+                        Compra
+                        <br>
+                        Publica
+                        <br>
+                        Vende
+                        <br>
+                        <strong>Todo en un mismo lugar</strong>  <i class="fas fa-shopping-basket"></i>
+                        <br>
+                        <a href="./singup.html" class="btn btn-primary badge-pill mt-2"><strong>Comenzar hoy</strong></a>
+                    </h2> 
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

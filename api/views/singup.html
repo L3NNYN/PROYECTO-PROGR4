@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js"></script>
+
+    <link rel="manifest" href="/site.webmanifest">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/54635cbd22.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="app" class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            <b-card header-tag="header" title="Ingresa tus datos">
+                <template #header>
+                    <h5>Registrarse</h5>
+                    <p>Ya tienes una cuenta? <a href="/login.html">iniciar sesión</a></p>
+                </template>
+                <b-form @submit="signup" method="post">
+                    <label for="nombre">Nombre real</label>
+                    <b-form-input size="md" id="nombre" name="nombre" v-model="form2.nombre" type="text" required placeholder="Ingresa tu nombre" class="my-2"></b-form-input>
+                    <label for="tel">Telefono</label>
+                    <b-form-input size="md" id="tel" name="tel" v-model="form2.telefono" type="text" required placeholder="Ingresa tu telefono" class="my-2"></b-form-input>
+                    <label for="dir">Email</label>
+                    <b-form-input size="md" id="email" name="email" v-model="form2.email" type="email" required placeholder="Ingresa tu email" class="my-2"></b-form-input>
+                    <label for="dir">Direccion</label>
+                    <b-form-input size="md" id="dir" name="dir" v-model="form2.direccion" type="text" required placeholder="Ingresa tu direccion" class="my-2"></b-form-input>
+                    <label for="pais">Pais</label>
+                    <b-form-select id="pais" name="pais" v-model="form2.pais" :options="paises" class="my-2"></b-form-select>
+                    <label for="foto">Foto</label>
+                    <b-form-file size="md" id="foto" name="foto" v-model="form2.foto" required placeholder="Elige tu foto" class="my-2"></b-form-file>
+                    
+                    <h6 class="my-2">Tipo de usuario <small class="text-danger">*esta elección no se podrá modificar</small></h6>
+                    <b-form-radio v-model="tipo" name="some-radios" value="T">Tienda</b-form-radio>
+                    <b-form-radio v-model="tipo" name="some-radios" value="C" class="mb-2">Comprador</b-form-radio>
+                    
+                    <label for="usuario">Usuario para inicio de sesión</label>
+                    <b-form-input size="md" id="usuario" name="nombre" v-model="form.nombre" type="text" required placeholder="Usuario" class="my-2"></b-form-input>
+                    <label for="password">Contraseña</label>
+                    <b-form-input size="md" id="password" name="password" v-model="form.password" placeholder="Password" class="my-2 p-2" required></b-form-input>
+                    <b-button size="sm" variant="primary" name="submit" type="submit" class="my-2">Registrarse</b-button>
+                </b-form>
+            </b-card>
+        </div>
+        <div class="col"></div>
+    </div>
+</body>
+</html>
