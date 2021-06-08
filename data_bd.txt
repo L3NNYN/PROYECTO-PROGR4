@@ -1,0 +1,2 @@
+INSERT INTO tbl_paises (descripcion) VALUES
+('Dinamarca'), ('Costa Rica');

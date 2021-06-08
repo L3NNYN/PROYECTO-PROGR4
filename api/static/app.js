@@ -1,3 +1,8 @@
+var BaseApiUrl = "http://localhost:5000/"; //ruta base a la API 
+function apiURL(service) { //Función para formar la ruta completa a la API 
+    return BaseApiUrl + service;
+}
+
 window.onload = function () {
     var vm = new Vue({
         el: '#app',
@@ -7,7 +12,7 @@ window.onload = function () {
                 password:''
             },
             // registro
-            form2: {
+            formSignup: {
                 nombre: '',
                 nombre:'',
                 password:'',
@@ -28,6 +33,8 @@ window.onload = function () {
             },
             tienda: {
                 puntaje: '12',
+                value:'4',
+                search:''
             }
             
         },
@@ -38,7 +45,12 @@ window.onload = function () {
                 
             },
             signup(){
+                
+            },
+            validarSignup(){      
+                if(this.form2){
 
+                }
             },
             puntajetienda(){
 

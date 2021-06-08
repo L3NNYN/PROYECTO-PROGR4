@@ -1,0 +1,332 @@
+/*
+Created: 03/06/21
+Modified: 07/06/21
+Model: MySQL 5.7
+Database: MySQL 5.7
+*/
+
+
+-- Create tables section -------------------------------------------------
+
+-- Table tbl_Usuarios
+
+CREATE TABLE tbl_Usuarios
+(
+  id_usr Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  cedula Varchar(30) NOT NULL,
+  usuario Varchar(20) NOT NULL,
+  password Varchar(65) NOT NULL,
+  nombre Varchar(20) NOT NULL,
+  direccion Varchar(150) NOT NULL,
+  foto Varchar(50) NOT NULL,
+  email Varchar(50) NOT NULL,
+  tipo_usuario Varchar(1) NOT NULL
+ COMMENT 'C: comprador, T: tienda
+',
+  id_pais Int(11) UNSIGNED,
+  PRIMARY KEY (id_usr)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship2 ON tbl_Usuarios (id_pais)
+;
+
+-- Table tbl_RedesSociales
+
+CREATE TABLE tbl_RedesSociales
+(
+  id_reds Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  descripcion Varchar(50) NOT NULL,
+  usr_id Int(11) UNSIGNED,
+  id_tipRed Int(11) UNSIGNED,
+  PRIMARY KEY (id_reds)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship1 ON tbl_RedesSociales (usr_id)
+;
+
+CREATE INDEX IX_Relationship29 ON tbl_RedesSociales (id_tipRed)
+;
+
+-- Table tbl_DireccionesDeEnvio
+
+CREATE TABLE tbl_DireccionesDeEnvio
+(
+  id_dire Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  numCasillero Varchar(15) NOT NULL,
+  codPostal Varchar(10) NOT NULL,
+  provincia Varchar(30) NOT NULL,
+  id_pais Int(11) UNSIGNED NOT NULL,
+  usr_id Int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (id_dire)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship3 ON tbl_DireccionesDeEnvio (id_pais)
+;
+
+CREATE INDEX IX_Relationship8 ON tbl_DireccionesDeEnvio (usr_id)
+;
+
+-- Table tbl_Paises
+
+CREATE TABLE tbl_Paises
+(
+  id_pais Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  descripcion Varchar(30) NOT NULL,
+  PRIMARY KEY (id_pais)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+-- Table tbl_Productos
+
+CREATE TABLE tbl_Productos
+(
+  id_prod Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  descripcion Varchar(150) NOT NULL,
+  usr_id Int(11) UNSIGNED NOT NULL,
+  stock Int NOT NULL,
+  publicacion Date NOT NULL,
+  precio Float(7,2) NOT NULL,
+  tiempoEnvio Varchar(10) NOT NULL,
+  costoEnvio Int NOT NULL,
+  id_categoria Int(11) UNSIGNED,
+  PRIMARY KEY (id_prod)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship5 ON tbl_Productos (usr_id)
+;
+
+CREATE INDEX IX_Relationship10 ON tbl_Productos (id_categoria)
+;
+
+-- Table tbl_Fotos
+
+CREATE TABLE tbl_Fotos
+(
+  id_foto Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  path Varchar(50) NOT NULL,
+  id_producto Int(11) UNSIGNED,
+  PRIMARY KEY (id_foto)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship4 ON tbl_Fotos (id_producto)
+;
+
+-- Table ListaDeseos
+
+CREATE TABLE ListaDeseos
+(
+  id_producto Int(11) UNSIGNED NOT NULL,
+  usr_id Int(11) UNSIGNED NOT NULL
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+ALTER TABLE ListaDeseos ADD PRIMARY KEY (id_producto,usr_id)
+;
+
+-- Table tbl_MetodosDePago
+
+CREATE TABLE tbl_MetodosDePago
+(
+  id_pago Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  nombrePropietario Varchar(20) NOT NULL,
+  numero Varchar(20) NOT NULL,
+  cvv Varchar(65) NOT NULL,
+  fechaVencimiento Varchar(5) NOT NULL,
+  saldo Float(7,2) NOT NULL,
+  usr_id Int(11) UNSIGNED,
+  PRIMARY KEY (id_pago)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship9 ON tbl_MetodosDePago (usr_id)
+;
+
+-- Table tbl_CategoriasProductos
+
+CREATE TABLE tbl_CategoriasProductos
+(
+  id_catp Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  descripcion Varchar(20) NOT NULL,
+  PRIMARY KEY (id_catp)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+-- Table CalificacionProducto
+
+CREATE TABLE CalificacionProducto
+(
+  id_producto Int(11) UNSIGNED NOT NULL,
+  usr_id Int(11) UNSIGNED NOT NULL
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+ALTER TABLE CalificacionProducto ADD PRIMARY KEY (id_producto,usr_id)
+;
+
+-- Table tbl_Suscripciones
+
+CREATE TABLE tbl_Suscripciones
+(
+  id_susc Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  usuario Int(11) UNSIGNED,
+  tienda Int(11) UNSIGNED,
+  PRIMARY KEY (id_susc)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship22 ON tbl_Suscripciones (usuario)
+;
+
+CREATE INDEX IX_Relationship26 ON tbl_Suscripciones (tienda)
+;
+
+-- Table tbl_CalificacionTienda
+
+CREATE TABLE tbl_CalificacionTienda
+(
+  id_cali Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  calificacion Int(1) NOT NULL,
+  usuario Int(11) UNSIGNED NOT NULL,
+  tienda Int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (id_cali)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship27 ON tbl_CalificacionTienda (usuario)
+;
+
+CREATE INDEX IX_Relationship28 ON tbl_CalificacionTienda (tienda)
+;
+
+-- Table tbl_tipoRedSocial
+
+CREATE TABLE tbl_tipoRedSocial
+(
+  id_tipr Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  descripcion Varchar(20) NOT NULL,
+  PRIMARY KEY (id_tipr)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+-- Table Compras
+
+CREATE TABLE Compras
+(
+  id_producto Int(11) UNSIGNED NOT NULL,
+  id_usr Int(11) UNSIGNED NOT NULL
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+ALTER TABLE Compras ADD PRIMARY KEY (id_producto,id_usr)
+;
+
+-- Table tbl_comentarios
+
+CREATE TABLE tbl_comentarios
+(
+  id_come Int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  descripcion Varchar(200) NOT NULL,
+  id_producto Int(11) UNSIGNED,
+  id_usr Int(11) UNSIGNED,
+  PRIMARY KEY (id_come)
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0
+;
+
+CREATE INDEX IX_Relationship34 ON tbl_comentarios (id_producto)
+;
+
+CREATE INDEX IX_Relationship35 ON tbl_comentarios (id_usr)
+;
+
+-- Create foreign keys (relationships) section ------------------------------------------------- 
+
+
+ALTER TABLE tbl_RedesSociales ADD CONSTRAINT Usuarios_RedesSociales FOREIGN KEY (usr_id) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_Usuarios ADD CONSTRAINT Relationship2 FOREIGN KEY (id_pais) REFERENCES tbl_Paises (id_pais) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_DireccionesDeEnvio ADD CONSTRAINT Relationship3 FOREIGN KEY (id_pais) REFERENCES tbl_Paises (id_pais) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_Fotos ADD CONSTRAINT Relationship4 FOREIGN KEY (id_producto) REFERENCES tbl_Productos (id_prod) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_Productos ADD CONSTRAINT Relationship5 FOREIGN KEY (usr_id) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE ListaDeseos ADD CONSTRAINT Relationship6 FOREIGN KEY (id_producto) REFERENCES tbl_Productos (id_prod) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE ListaDeseos ADD CONSTRAINT Relationship7 FOREIGN KEY (usr_id) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_DireccionesDeEnvio ADD CONSTRAINT Relationship8 FOREIGN KEY (usr_id) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_MetodosDePago ADD CONSTRAINT Relationship9 FOREIGN KEY (usr_id) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_Productos ADD CONSTRAINT Relationship10 FOREIGN KEY (id_categoria) REFERENCES tbl_CategoriasProductos (id_catp) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE CalificacionProducto ADD CONSTRAINT Relationship11 FOREIGN KEY (id_producto) REFERENCES tbl_Productos (id_prod) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE CalificacionProducto ADD CONSTRAINT Relationship12 FOREIGN KEY (usr_id) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_Suscripciones ADD CONSTRAINT Relationship22 FOREIGN KEY (usuario) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_Suscripciones ADD CONSTRAINT Relationship26 FOREIGN KEY (tienda) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_CalificacionTienda ADD CONSTRAINT Relationship27 FOREIGN KEY (usuario) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_CalificacionTienda ADD CONSTRAINT Relationship28 FOREIGN KEY (tienda) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_RedesSociales ADD CONSTRAINT Relationship29 FOREIGN KEY (id_tipRed) REFERENCES tbl_tipoRedSocial (id_tipr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE Compras ADD CONSTRAINT Relationship32 FOREIGN KEY (id_producto) REFERENCES tbl_Productos (id_prod) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE Compras ADD CONSTRAINT Relationship33 FOREIGN KEY (id_usr) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_comentarios ADD CONSTRAINT Relationship34 FOREIGN KEY (id_producto) REFERENCES tbl_Productos (id_prod) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+
+ALTER TABLE tbl_comentarios ADD CONSTRAINT Relationship35 FOREIGN KEY (id_usr) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+

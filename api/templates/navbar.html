@@ -1,0 +1,19 @@
+<ul class="nav justify-content-center">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="/inicio">Inicio</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/">Index</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/ruleta">Ruleta</a>
+    </li>
+    <li class="nav-item">
+        {% if session.tipo_usuario == 'C' %}
+        <a class="nav-link" href="/perfil" tabindex="-1" aria-disabled="true">Tu perfil</a>
+        {%else%}
+        <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Tu tienda</a>
+        {%endif%}
+
+    </li>
+</ul>

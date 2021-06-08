@@ -1,15 +1,19 @@
 html, body {
     margin: 0;
     height: 100%;
+    width: 100%;
 }
 
 #app {
     height: 100vh;
-    font-family: 'Raleway', sans-serif;
+    /* width: 100vh; */
+    /* font-family: 'Raleway', sans-serif; */
+    /* font-family: 'Baloo Tammudu 2', sans-serif; */
+    font-family: 'Montserrat', sans-serif;
 }
 
 #index-info{
-    height: 100vh;
+    /* height: 100vh; */
     /* background-image: url('./img/5865.jpg') no-repeat;
     background-position: center; */
     /*background-repeat: no-repeat;
