@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{%block title%}Metodos de Pago{%endblock%}
+
+{%block head%}
+
+<script src="{{ url_for('static', filename = 'metodos_pago.js') }}"></script>
+
+{%endblock%}
+
+{%block body%}
+
+{% include "navbar.html" %}
+
+<div class="container">
+    <div class="row">
+        <!-- <div class="col"></div> -->
+        <div class="col d-flex flex-column align-items-center">
+            <b-button @click="insertForm" variant="primary dadge-pill" class="my-2" v-b-modal.modal><i class="fas fa-plus"></i> Agregar nuevo metodo de pago</b-button>
+
+            
+            <b-table v-if="metodos_pago != '' " striped hover :items="metodos_pago" :fields="fields" >
+                <template slot="[actions]" slot-scope="row">
+                    <b-button size="sm"
+                        @click="editForm(row.item.id, row.item.propietario, row.item.numero, row.item.cvv, row.item.fecha, row.item.saldo)"
+                        variant="primary" v-b-modal.modal><i class="fas fa-pen"></i></b-button>
+                    <b-button size="sm" @click="deleteData(row.item.id)" variant="danger"><i class="fas fa-trash-alt"></i></b-button>
+                </template>
+            </b-table>
+
+            <h2 v-else>No tienes metodos de pago aun</h2>
+            
+            <b-modal id="modal" ref="modal" @hidden="reset" @ok="save"> 
+                <template slot="modal-header">
+                <h3>{{formTitle}}</h3>
+                </template>
+                <b-form @submit="save" @reset="reset"> <input type="hidden" id="id" :value="form.id" />
+                    <b-form-group id="input-title" label="Nombre Propietario" label-for="propietario">
+                        <b-form-input id="propietario" v-model="form.propietario" type="text" required
+                            placeholder="Inserta el nombre del propietario"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="Numero" label-for="numero">
+                        <b-form-input id="numero" v-model="form.numero" type="text" required
+                            placeholder="Ingrese el numero"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="CVV" label-for="cvv">
+                        <b-form-input id="cvv" v-model="form.cvv" type="number"
+                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" 
+                        maxlength="3" required placeholder="Ingresa el CVV"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="Fecha de Vencimiento" label-for="fecha">
+                        <b-form-input id="fecha" v-model="form.fecha" type="text" required
+                            placeholder="Ingresa la fecha de vencimiento"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="Saldo" label-for="saldo">
+                        <b-form-input id="saldo" v-model="form.saldo" type="number" required
+                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                        maxlength="7"   placeholder="Ingrese el saldo"></b-form-input>
+                    </b-form-group>
+                </b-form> 
+                <template slot="modal-footer" slot-scope="{ ok, cancel }">
+                    <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+                    <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+                </template>
+            </b-modal>
+        </div>
+        <!-- <div class="col"></div> -->
+    </div>
+</div>
+
+{%endblock%}

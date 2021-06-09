@@ -1,4 +1,0 @@
-
-
-def newSession():
-    print('jej')

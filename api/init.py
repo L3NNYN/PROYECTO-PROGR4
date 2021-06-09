@@ -27,4 +27,5 @@ app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
 import index
 import auth
 import user
-
+import metodo_pago
+import direccion_envio

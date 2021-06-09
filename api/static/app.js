@@ -35,6 +35,15 @@ window.onload = function () {
                 puntaje: '12',
                 value:'4',
                 search:''
+            },
+            fields:['Nombre', 'Numero', 'CVV', 'F.Vencimiento', 'Saldo'],
+            metodos_pago:{
+                id: '',
+                propietario: '',
+                numero: '',
+                cvv:'',
+                fecha:'',
+                saldo: ''
             }
             
         },
@@ -54,7 +63,15 @@ window.onload = function () {
             },
             puntajetienda(){
 
-            }
+            },
+            
+
+            editForm(id, propietario, numero, cvv, fechaVencimiento, saldo){
+
+            },
+            deleteData(id){
+
+            },
         }
     });
 }

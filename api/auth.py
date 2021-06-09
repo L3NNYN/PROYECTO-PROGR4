@@ -80,21 +80,3 @@ def singup():
 def signup():
     return render_template('views/signup.html')
 
-@app.route('/paises')
-def paises():
-    try:
-        cur = mysql.connect().cursor()
-        cur.execute("SELECT * FROM tbl_paises")
-        rows = cur.fetchall()
-        json_items = []
-        content = {}
-        for result in rows:
-            content = {'value': result[0], 'text': result[1]} #value = id, text = nombre del pais
-            json_items.append(content)
-        content ={}
-        return jsonify(json_items) #se retorna el formato JSON
-    except Exception as e:
-        print(e)
-    finally:
-        cur.close()
-        print('listo')

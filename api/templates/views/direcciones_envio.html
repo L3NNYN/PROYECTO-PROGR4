@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{%block title%}Direcciones de Envio{%endblock%}
+
+{%block head%}
+
+<script src="{{ url_for('static', filename = 'direcciones_envio.js') }}"></script>
+
+{%endblock%}
+
+
+{%block body%}
+{% include "navbar.html" %}
+
+<div class="container">
+    <div class="row">
+        <!-- <div class="col"></div> -->
+        <div class="col d-flex flex-column align-items-center">
+            <b-button @click="insertForm" variant="primary dadge-pill" class="my-2" v-b-modal.modal><i class="fas fa-plus"></i> Agregar nueva direccion de envio</b-button>
+
+            <b-table v-if="direcciones_envio != '' " striped hover :items="direcciones_envio" :fields="fields" >
+                <template slot="[actions]" slot-scope="row">
+                    <b-button size="sm"
+                        @click="editForm(row.item.id, row.item.casillero, row.item.codPostal, row.item.provincia, row.item.id_pais)"
+                        variant="primary" v-b-modal.modal><i class="fas fa-pen"></i></b-button>
+                    <b-button size="sm" @click="deleteData(row.item.id)" variant="danger"><i class="fas fa-trash-alt"></i></b-button>
+                </template>
+            </b-table>
+
+            <h2 v-else>No tienes direcciones de envio aun</h2>
+            
+            <b-modal id="modal" ref="modal" @hidden="reset" @ok="save"> 
+                <template slot="modal-header">
+                <h3>{{formTitle}}</h3>
+                </template>
+                <b-form @submit="save" @reset="reset"> 
+                    <input type="hidden" id="id" :value="form.id" />
+                    <b-form-group id="input-title" label="Numero de Casillero" label-for="numCasillero">
+                        <b-form-input id="numCasillero" v-model="form.numCasillero" type="text" required
+                            placeholder="Ingresa el numero del casillero"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="Codigo Postal" label-for="codPostal">
+                        <b-form-input id="codPostal" v-model="form.codPostal" type="text" required
+                            placeholder="Ingrese el codigo postal"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="Provincia" label-for="provincia">
+                        <b-form-input id="provincia" v-model="form.provincia" type="text" required 
+                        placeholder="Ingresa la provincia"></b-form-input>
+                    </b-form-group>
+                    <b-form-group id="input-text" label="Pais" label-for="pais">
+                        <b-form-select id="pais" v-model="form.id_pais" :options="paises" required></b-form-select>
+                    </b-form-group>
+                </b-form> 
+                <template slot="modal-footer" slot-scope="{ ok, cancel }">
+                    <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+                    <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+                </template>
+            </b-modal>
+        </div>
+        <!-- <div class="col"></div> -->
+    </div>
+</div>
+{%endblock%}

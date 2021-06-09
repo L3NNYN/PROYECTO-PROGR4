@@ -19,10 +19,7 @@ window.onload = function () {
                 // email:'',
                 // tipo: ''
             },
-            paises: [
-                {value:1, text:'Nana1,'},
-                {value:2, text:'Nana'}
-            ],
+            paises:[],
         },
         mounted() {
             // this.getData(); // Carga los datos desde el inicio (se creará más adelante) 
