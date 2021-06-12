@@ -2,9 +2,16 @@ from flask import jsonify, request, render_template, redirect, session, flash
 from init import app
 from init import mysql
 
+
 @app.route('/')
 def render():
-    if session['usuario'] != '':
+    # session['auth'] = False
+    # session['id'] = ''
+    # session['usuario'] = ''
+    # session['nombre'] = ''
+    # session['tipo_usuario'] = ''
+    if 'usuario' in session:
+        print(session['usuario'])
         # return render_template("views/index.html")
         return redirect('/inicio')
     else:

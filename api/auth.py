@@ -8,12 +8,12 @@ import bcrypt
 
 @app.route('/login', methods=['POST', 'GET']) #Sólo podrá ser accedida vía POST 
 @app.route('/login/<msg>')
-def login(msg=None):
+def login():
     try: 
         cur = mysql.connect().cursor()
 
         if request.method == 'GET':
-            return render_template('views/login.html', msg=msg)
+            return render_template('views/login.html')
         else:
             data = request.form
             # _json = request.get_json(force=True) #Obtiene en formato JSON los datos enviados desde el front-End
@@ -22,6 +22,7 @@ def login(msg=None):
             cur.execute("SELECT t.usuario, t.password, t.nombre, t.tipo_usuario, t.id_usr FROM tbl_usuarios t WHERE usuario = %s", (_usuario))
             rows = cur.fetchone()
             if rows and bcrypt.checkpw(_password.encode('utf8'), rows[1].encode('utf8')):
+                session.permanent = False
                 session['usuario'] = rows[0]
                 session['nombre'] = rows[2]
                 session['tipo_usuario'] = rows[3]
@@ -80,3 +81,11 @@ def singup():
 def signup():
     return render_template('views/signup.html')
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('usuario', None)
+    session.pop('id', None)
+    session.pop('tipo_usuario', None)
+    session.pop('nombre', None)
+
+    return redirect('/login')

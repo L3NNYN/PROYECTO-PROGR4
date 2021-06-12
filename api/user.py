@@ -19,8 +19,6 @@ def pefil():
             return render_template('views/usuario.html', data =data)
         elif request.method == 'PUT':
             return redirect('/perfil')
-
-        print('asd')
     except Exception as e:
         print(e)
         res = 'Ha ocurrido un error'

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title%}Productos{%endblock%}
+
+{%block body%}
+
+{% include "navbar.html" %}
+
+<div class="row">
+    <div class="col-10 justify-content-center">
+        <a class="btn btn-primary my-2" style="color: #fff" href="/nuevo_producto"><i class="fas fa-plus"></i> Agregar nuevo producto</a>
+        
+        <div class="d-flex flex-row">
+
+            {% if items %}
+            {% for i in items %}
+            <br>
+            <a href="/">{{i.id}}</a>
+            {% endfor %}
+            {%else%}
+            
+            <h2 class="my-5">No tienes productos agregados aun</h2>
+            {%endif%}
+        </div>
+    </div>
+    <div class="col-2">
+        {% include "message.html" %}
+    </div>
+
+{%endblock%}
