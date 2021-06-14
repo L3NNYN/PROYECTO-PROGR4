@@ -14,10 +14,9 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-6">
-            <b-card header-tag="header" title="Ingresa tus datos">
+            <b-card header-tag="header" footer-tag="footer" title="Ingresa los datos de tu nuevo producto" class="my-5">
                 <template #header>
-                    <h5>Registrarse</h5>
-                    <a class="btn btn-secondary" href="/productos">Cancelar</a>
+                    <h5>Nuevo producto</h5>
                 </template>
                 <b-form method="post" action="/nuevo_producto" enctype="multipart/form-data">
                     <label for="Descripcion">Descripcion</label>
@@ -33,16 +32,16 @@
                     <label for="categoria">Categoria</label>
                     <div class="d-flex flex-row">
                         <b-form-select id="categoria" name="categoria" v-model="form.categoria" :options="categorias" class="my-2" required></b-form-select>
-                        <b-button @click="insertForm" variant="primary" class="mx-2 my-2" v-b-modal.modal><i class="fas fa-plus"></i></b-button>
+                        <b-button @click="insertForm" variant="primary" class="ml-2 my-2" v-b-modal.modal><i class="fas fa-plus"></i></b-button>
                     </div>
                     <label for="foto">Fotos del producto</label>
                     <b-form-file size="md" id="foto" name="foto" v-model="form.fotos" required placeholder="Elige las fotos" class="my-2" multiple></b-form-file>
-                    <!-- <label for="usuario">Usuario para inicio de sesión</label>
-                    <b-form-input size="md" id="usuario" name="usuario" v-model="form.usuario" type="text" required placeholder="Usuario" class="my-2"></b-form-input>
-                    <label for="password">Contraseña</label>
-                    <b-form-input size="md" id="password" name="password" v-model="form.password" maxlength="20" placeholder="Password" class="my-2 p-2" required></b-form-input> -->
-                    <b-button size="md" variant="primary" name="submit" type="submit" class="my-2">Guardar</b-button>
+                    
                 </b-form>
+                <template #footer>
+                    <a class="btn btn-secondary" href="/productos">Cancelar</a>
+                    <b-button size="md" variant="primary" name="submit" type="submit" class="my-2">Guardar</b-button>
+                </template>
             </b-card>
             <b-modal id="modal" ref="modal" @hidden="reset" @ok="save"> 
                 <template slot="modal-header">

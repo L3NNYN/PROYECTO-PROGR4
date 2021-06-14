@@ -19,7 +19,6 @@ def productos():
                 content = {'id': result[0], 'descripcion': result[1], 'stock': result[2], 'publicacion': result[3], 'precio':result[4], 'tiempoEnvio': result[5], 'costoEnvio': result[6], 'categoria': result[7]} #value = id, text = nombre del pais
                 items.append(content)
             content ={}
-            print(items)
             return render_template('views/productos.html', items=items)
         else:
             return redirect('/login')
@@ -27,6 +26,33 @@ def productos():
         print(e)
     finally:
         cur.close()
+
+@app.route('/producto/<int:id>')
+def producto(id=None):
+    try:
+        cur = mysql.connect().cursor()
+        if id == None:
+            return redirect('/inicio')
+        else:
+            cur.execute("SELECT p.id_prod, p.usr_id, p.descripcion, p.stock, p.publicacion, p.precio, p.tiempoenvio, p.costoenvio, c.descripcion FROM tbl_productos p RIGHT JOIN tbl_categoriasproductos c ON c.id_catp = p.id_categoria WHERE p.id_prod =%s", (id,))
+            result = cur.fetchone()
+            items = []
+
+            items.append({'id': result[0], 'tienda': result[1],'descripcion': result[2], 'stock': result[3], 'publicacion': result[4], 'precio':result[5], 'tiempoEnvio': result[6], 'costoEnvio': result[7], 'categoria': result[8]})
+            cur.execute("SELECT path FROM tbl_fotos WHERE id_producto = %s", (id,))
+            rows = cur.fetchall()
+
+            fotos = []
+            for data in rows:
+                fotos.append({'path': data[0]})
+           
+            print(items)
+            return render_template('views/producto.html', items=items, fotos= fotos, len = len(fotos))
+    except Exception as e:
+        print(e)
+    finally:
+       cur.close()
+
 
 @app.route('/nuevo_producto', methods=['GET','POST'])
 def new_prod():

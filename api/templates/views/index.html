@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Marketplace Multivendor</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
     <script src="{{ url_for('static', filename = 'app.js') }}"></script>
@@ -25,7 +25,8 @@
 <body>
     <div id="app">
             <!-- <div class="container"> -->
-                <div class="row">
+                <!-- <div class="row"> -->
+                    <div class="d-flex flex-row">
                     <div id="index-info" class="col d-flex align-items-center">
                         <!-- <h1><strong>Marketplace Multivendor</strong></h1> -->
                         <b-card-img src="{{ url_for('static', filename = '/resources/5865.jpg') }}" alt="Image" class="rounded-0"></b-card-img>
@@ -62,9 +63,9 @@
                             {% endwith %} -->
 
                         </div>
-                    </div>
+                    <!-- </div> -->
                 </div>
             </div>
-        <!-- </div> -->
+        </div>
     </body>
     </html>

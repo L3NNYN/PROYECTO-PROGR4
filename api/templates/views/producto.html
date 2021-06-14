@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producto</title>
 
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
-    <script src="{{ url_for('static', filename = 'app.js') }}"></script>
-
-    <!-- <link rel="manifest" href="/site.webmanifest"> -->
+    <link rel="manifest" href="/site.webmanifest">
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -24,7 +23,17 @@
 
 </head>
 <body>
-    <div id="app">
+    <div id="app"> -->
+{% extends "layout.html"%}
+
+{%block title%}Producto{%endblock%}
+
+{%block head%}
+<script src="{{ url_for('static', filename = 'app.js') }}"></script>
+{%endblock%}
+
+{%block body%}
+{% include "navbar.html" %}
         <div class="row">
             <div class="col"></div>
             <div class="col-6">
@@ -37,23 +46,40 @@
                         img-width="1024"
                         img-height="480"
                     >
-                        <b-carousel-slide
-                        caption="First slide"
-                        img-src="https://picsum.photos/1024/480/?image=10"
-                        ></b-carousel-slide>
-                        <b-carousel-slide
-                        caption="Second Slide"
-                        img-src="https://picsum.photos/1024/480/?image=12"
-                        ></b-carousel-slide>
-                        <b-carousel-slide
-                        caption="Third Slide"
-                        img-src="https://picsum.photos/1024/480/?image=22"
-                        ></b-carousel-slide>
+                        {%for i in range(0, len)%}
+                        <b-carousel-slide img-src="/static/img_productos/{{fotos[i].path}}"></b-carousel-slide>
+
+                        {%endfor%}
+
                     </b-carousel>
+                    {%if items%}
+                    <h2>{{ items[0].descripcion }}</h2>
+                    <h3>Precio: {{items[0].precio}}</h3>
+                    <h6>Restante: {{items[0].stock}}</h6>
+                    <small>{{items[0].publicacion}}</small>
+                    {%endif%}
+                    <b-card border-variant="dark" header-tag="header" footer-tag="footer">
+                        <template #header>
+                            <h4 class="mb-0">Comentarios</h4>
+                        </template>
+                        <b-card-text>
+                              Header and footers using slots.
+                            </b-card-text>
+                          <!-- <b-button href="#" variant="primary">Go somewhere</b-button> -->
+                          <template #footer>
+                              <div class="d-flex flex-row">
+
+                                <b-form-input id="hola" type="text" class="badge-pill" placeholder="Deja tu comentario u pregunta"></b-form-input> 
+                                <b-button href="#" variant="primary badge-pill mx-2">Enviar</b-button>
+                                </div>
+                                </template>
+                        </b-card>
                 </div>
             </div>
             <div class="col"></div>
         </div>
-    </div>
+
+{%endblock%}
+    <!-- </div>
 </body>
-</html>
+</html> -->
