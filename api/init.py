@@ -25,9 +25,9 @@ app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
 
  
 #vistas
-import index
-import auth
-import user
-import metodo_pago
-import direccion_envio
-import producto
+import controllers.index
+import controllers.auth
+import controllers.user
+import controllers.metodo_pago
+import controllers.direccion_envio
+import controllers.producto

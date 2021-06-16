@@ -4,22 +4,74 @@
 
 <!-- {%block menu%} {{ super() }} {%endblock%} -->
 
+{%block head%}
+<script src="{{ url_for('static', filename = '/js/inicio.js') }}"></script>
+{%endblock%}
+
 {%block body%}
 {%include "navbar.html"%}
 
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            informacion
+<!-- <div class="container"> -->
+        <div class="col-10">
+            <div class="mx-5 my-2 d-flex flex-row">
+                <b-form-input class="badge-pill" v-model="filtro" placeholder="Buscar"></b-form-input>
+                <b-button @click="filtrar" variant="primary badge-pill mx-2"><i class="fas fa-search"></i></b-button>
+            </div>
+            <div id="masVendidos" class="m-5 p-2">
+                <h3>Más vendidos <i class="fas fa-fire"></i></h3>
+                    <div class="container horizontal-scrollable">
+                        <div class="row text-center">
+                            <div class="col-xs-4">1</div>
+                            <div class="col-xs-4">2</div>
+                            <div class="col-xs-4">3</div>
+                            <div class="col-xs-4">4</div>
+                            <div class="col-xs-4">5</div>
+                            <div class="col-xs-4">6</div>
+                            <div class="col-xs-4">7</div>
+                        </div>
+                    </div>
+            </div>
+            <div id="todos" class="m-5 p-2">
+                <h3>Todos los productos <i class="fas fa-box-open"></i></h3>
+                <div v-if="productos != '' " class="d-flex flex-row">
+                        <b-card v-for="item in productos" img-top tag="article" style="min-width:20rem; min-height: 15rem;" class=" m-2">
+                                <b-card-text class="">
+                                    <div class="d-flex flex-row ">
+                                        <h4>[[item.descripcion]]</h5>
+                                        <h6 class="m-2">Precio: [[item.precio]]</h6>
+                                    </div>
+                                    <small>[[item.fechapublicacion]]</small>
+                                </b-card-text>
+                                <b-card-footer class="d-flex flex-row">
+                                    <b-button :href="'/producto/'+item.id" variant="outline-info mx-2">Ver</b-button>
+                                    <b-button @click="agregarCarrito(item.id)" variant="primary">Agregar al carrito</b-button>
+                                </b-card-footer>
+                        </b-card>
+                        
+                    </div>
+                    <h4 v-else class="m-5">No hay productos</h4>
+            </div>
+            <div class="m-5 p-2">
+                <h3>Tiendas <i class="fas fa-store"></i></h3>
+                <div class="d-flex flex-row">
+                    <b-card v-for="item in tiendas" img-top tag="article" style="min-width:20rem; min-height: 15rem;" class=" m-2">
+                        <b-card-text class="">
+                            <div class="d-flex flex-row">
+                                <b-img v-bind:width="75" v-bind:height="75" size="5rem" :src="'/static/pics/' + item.foto" rounded="circle"></b-img>
+                                <h4>[[item.nombre]]</h5>
+                            </div>
+                        </b-card-text>
+                        <b-card-footer>
+                            <b-button :href="'/tienda/' +item.id" variant="primary">Ir a tienda</b-button>
+                            {% if session.tipo_usuario == 'C' %}
+                            <b-button :href="'/seguir/' +item.id" variant="primary">Seguir</b-button>
+                            {%endif%}
+                        </b-card-footer>
+                    </b-card>
+                </div>
+            </div>
         </div>
-        <div class="col justify-content-center">
-                informacion
-        </div>
-        <div class="col">
-            informacion
-        </div>
-    </div>
-</div>
+<!-- </div> -->
 
 {%endblock%}

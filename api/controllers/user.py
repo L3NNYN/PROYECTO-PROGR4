@@ -25,3 +25,28 @@ def pefil():
         return res
     finally:
         cur.close()
+
+@app.route('/ruleta')
+def ruleta():
+    try:
+        return render_template('views/ruleta.html')
+    except Exception as e:
+        print(e)
+
+@app.route('/canasta_api')
+def basket():
+    try:
+        cant = len(session['canasta'])
+        return jsonify(cant)
+    except Exception as e:
+        print(e)
+
+def aux():
+    try:
+        conn = mysql.connect()
+        cur = conn.cursor()
+
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()

@@ -4,13 +4,14 @@ from werkzeug.utils import secure_filename
 from init import mysql
 from init import app
 
+
 @app.route('/productos', methods=['GET'])
 def productos():
     try:
         cur = mysql.connect().cursor()
         if 'usuario' in session:
             print(session['usuario'])
-            cur.execute("SELECT p.id_prod, p.descripcion, p.stock, p.publicacion, p.precio, p.tiempoenvio, p.costoenvio, c.descripcion FROM tbl_productos p RIGHT JOIN tbl_categoriasproductos c ON c.id_catp = p.id_categoria WHERE p.usr_id = %s", (session['id'],))
+            cur.execute("SELECT p.id_prod, p.descripcion, p.stock, DATE_FORMAT(p.publicacion, %s), p.precio, p.tiempoenvio, p.costoenvio, c.descripcion FROM tbl_productos p RIGHT JOIN tbl_categoriasproductos c ON c.id_catp = p.id_categoria WHERE p.usr_id = %s", (("%d %M %Y"),session['id'],))
 
             rows = cur.fetchall()
             items = []
@@ -31,6 +32,10 @@ def productos():
 def producto(id=None):
     try:
         cur = mysql.connect().cursor()
+
+        if not 'usuario' in session:
+            return redirect('/login')
+
         if id == None:
             return redirect('/inicio')
         else:
@@ -46,12 +51,29 @@ def producto(id=None):
             for data in rows:
                 fotos.append({'path': data[0]})
            
-            print(items)
-            return render_template('views/producto.html', items=items, fotos= fotos, len = len(fotos))
+            if session['tipo_usuario'] == 'C':
+                return render_template('views/producto.html', items=items, fotos= fotos, len = len(fotos))
+            else:
+                return render_template('views/producto.html', items=items, fotos= fotos, len = len(fotos))
+
     except Exception as e:
         print(e)
     finally:
        cur.close()
+
+@app.route('/lista_deseos/<int:id>', methods=['POST'])
+def deseos(id = None):
+    try:
+        cur = mysql.connect().cursor()
+        if not 'usuario' in session:
+            return redirect('/login')
+        else:
+            cur.execute("INSERT INTO listadeseos (usr_id, id_producto) VALUES (%s, %s)", (session['id'], id))
+            return redirect('/producto/'+id)
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()
 
 
 @app.route('/nuevo_producto', methods=['GET','POST'])
@@ -133,3 +155,80 @@ def categorias():
         print(e)
     finally:
         cur.close()
+
+@app.route('/todo_productos_api')
+@app.route('/todo_productos_api/<string:filter>')
+def todoProductos(filter=None):
+    try:
+        cur = mysql.connect().cursor()
+        if filter == None:
+            cur.execute("SELECT t.id_prod, t.descripcion, t.stock, DATE_FORMAT(t.publicacion, '%d %M %Y'), t.precio FROM tbl_productos t")
+        else:
+            cur.execute("SELECT t.id_prod, t.descripcion, t.stock, DATE_FORMAT(t.publicacion, %s), t.precio FROM tbl_productos t WHERE t.descripcion LIKE  %s", ("%d %M %Y","%" + filter +"%",))
+
+        rows = cur.fetchall()
+        json_items = []
+        content = {}
+        for result in rows:
+            content = {'id': result[0], 'descripcion': result[1], 'stock': result[2], 'fechapublicacion': result[3], 'precio': result[4]} #value = id, text = nombre del pais
+            json_items.append(content)
+        
+        return jsonify(json_items)
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()
+
+
+@app.route('/todo_tiendas_api')
+@app.route('/todo_tiendas_api/<string:filter>')
+def todoTiendas(filter = None):
+    try:
+        cur = mysql.connect().cursor()
+        if filter == None:
+            cur.execute("SELECT t.id_usr, t.nombre, t.foto  FROM tbl_usuarios t WHERE t.tipo_usuario = 'T'")
+        else:
+            cur.execute("SELECT t.id_usr, t.nombre, t.foto  FROM tbl_usuarios t WHERE t.tipo_usuario = 'T' WHERE t.nombre LIKE %s ", ("%"+ filter +"%"))
+        rows = cur.fetchall()
+        json_items = []
+        content = {}
+        for result in rows:
+            content = {'id': result[0], 'nombre': result[1], 'foto': result[2]} #value = id, text = nombre del pais
+            json_items.append(content)
+        
+        return jsonify(json_items)
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()
+
+@app.route('/mas_vendidos_api')
+def mas_vendidos():
+    try:
+        cur = mysql.connect().cursor()
+        cur.execute("SELECT t.id_usr, t.nombre, t.foto  FROM tbl_usuarios t WHERE t.tipo_usuario = 'T'")
+        rows = cur.fetchall()
+        json_items = []
+        content = {}
+        for result in rows:
+            content = {'id': result[0], 'nombre': result[1], 'foto': result[2]} #value = id, text = nombre del pais
+            json_items.append(content)
+        
+        return jsonify(json_items)
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()
+
+@app.route('/canasta_api', methods=['POST'])
+def canasta():
+    try:
+        _json = request.get_json(force=True)
+        _id = _json['id']
+        session['canasta'].append({'id':_id})
+
+        res = jsonify('Producto agregado a la canasta correctamente.')
+        res.status_code = 200
+        return res 
+    except Exception as e:
+        print(e)

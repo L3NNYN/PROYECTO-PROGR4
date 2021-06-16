@@ -23,6 +23,7 @@ def login():
             rows = cur.fetchone()
             if rows and bcrypt.checkpw(_password.encode('utf8'), rows[1].encode('utf8')):
                 session.permanent = False
+                session['canasta'] = []
                 session['usuario'] = rows[0]
                 session['nombre'] = rows[2]
                 session['tipo_usuario'] = rows[3]
@@ -74,7 +75,6 @@ def singup():
         res.status_code = 200 
         return res 
     finally: 
-        print('jeje2')
         cur.close()
 
 @app.route('/signup', methods=['GET'])
@@ -87,5 +87,6 @@ def logout():
     session.pop('id', None)
     session.pop('tipo_usuario', None)
     session.pop('nombre', None)
+    session.pop('canasta', None)
 
     return redirect('/login')

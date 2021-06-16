@@ -5,22 +5,10 @@ from init import mysql
 
 @app.route('/')
 def render():
-    # session['auth'] = False
-    # session['id'] = ''
-    # session['usuario'] = ''
-    # session['nombre'] = ''
-    # session['tipo_usuario'] = ''
-    if 'usuario' in session:
-        print(session['usuario'])
-        # return render_template("views/index.html")
-        return redirect('/inicio')
-    else:
-        return render_template("views/index.html")
-
+    return render_template("views/index.html")
 
 @app.route('/tienda', methods=['GET'])
 def tienda():
-
     return render_template("views/tienda.html")
 
 @app.route('/inicio')

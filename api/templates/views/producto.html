@@ -43,11 +43,10 @@
                         style="text-shadow: 0px 0px 2px #000"
                         fade
                         indicators
-                        img-width="1024"
-                        img-height="480"
+
                     >
                         {%for i in range(0, len)%}
-                        <b-carousel-slide img-src="/static/img_productos/{{fotos[i].path}}"></b-carousel-slide>
+                        <b-carousel-slide style="max-width:10rem; max-height:10rem;" img-src="/static/img_productos/{{fotos[i].path}}"></b-carousel-slide>
 
                         {%endfor%}
 
@@ -57,6 +56,10 @@
                     <h3>Precio: {{items[0].precio}}</h3>
                     <h6>Restante: {{items[0].stock}}</h6>
                     <small>{{items[0].publicacion}}</small>
+                    {%endif%}
+
+                    {%if session.tipo_usuario == 'C'%}
+                        
                     {%endif%}
                     <b-card border-variant="dark" header-tag="header" footer-tag="footer">
                         <template #header>
