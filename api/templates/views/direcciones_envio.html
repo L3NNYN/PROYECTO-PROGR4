@@ -4,7 +4,7 @@
 
 {%block head%}
 
-<script src="{{ url_for('static', filename = 'direcciones_envio.js') }}"></script>
+<script src="{{ url_for('static', filename = '/js/direcciones_envio.js') }}"></script>
 
 {%endblock%}
 
@@ -12,9 +12,6 @@
 {%block body%}
 {% include "navbar.html" %}
 
-<div class="container">
-    <div class="row">
-        <!-- <div class="col"></div> -->
         <div class="col d-flex flex-column align-items-center">
             <b-button @click="insertForm" variant="primary dadge-pill" class="my-2" v-b-modal.modal><i class="fas fa-plus"></i> Agregar nueva direccion de envio</b-button>
 
@@ -57,7 +54,4 @@
                 </template>
             </b-modal>
         </div>
-        <!-- <div class="col"></div> -->
-    </div>
-</div>
 {%endblock%}

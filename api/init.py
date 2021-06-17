@@ -7,7 +7,7 @@ app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 #Sesiones
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
@@ -31,3 +31,4 @@ import controllers.user
 import controllers.metodo_pago
 import controllers.direccion_envio
 import controllers.producto
+import controllers.inicio

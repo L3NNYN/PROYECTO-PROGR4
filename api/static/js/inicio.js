@@ -34,7 +34,6 @@ window.onload = function () {
                 }
                 axios.get(url).then((response) => {
                     this.tiendas = response.data;
-                    console.log(this.tiendas);
                 }).catch(error => { alertify.error(error); });
             },
             getProductos(filter){
@@ -56,9 +55,10 @@ window.onload = function () {
             },
             filtrar(){
                this.getProductos(this.filtro);
+               this.getTiendas(this.filtro);
             },
             agregarCarrito(id){
-                axios.post(apiURL('canasta_api'), JSON.stringify({'id':id}))
+                axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':id}))
                 .then((response) => {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });

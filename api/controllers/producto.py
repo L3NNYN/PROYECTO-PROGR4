@@ -43,38 +43,59 @@ def producto(id=None):
             result = cur.fetchone()
             items = []
 
+            # Informacion del producto y sus fotos
             items.append({'id': result[0], 'tienda': result[1],'descripcion': result[2], 'stock': result[3], 'publicacion': result[4], 'precio':result[5], 'tiempoEnvio': result[6], 'costoEnvio': result[7], 'categoria': result[8]})
             cur.execute("SELECT path FROM tbl_fotos WHERE id_producto = %s", (id,))
             rows = cur.fetchall()
+            fotos = []
+            for data in rows:
+                fotos.append({'path': data[0]})
 
+            cur.execute("SELECT path FROM tbl_fotos WHERE id_producto = %s", (id,))
+            rows = cur.fetchall()
             fotos = []
             for data in rows:
                 fotos.append({'path': data[0]})
            
-            if session['tipo_usuario'] == 'C':
-                return render_template('views/producto.html', items=items, fotos= fotos, len = len(fotos))
-            else:
-                return render_template('views/producto.html', items=items, fotos= fotos, len = len(fotos))
+
+            return render_template('views/producto.html', items=items, fotos= fotos, len_f = len(fotos))
+            # if session['tipo_usuario'] == 'C':
+            # else:
+            #     return render_template('views/producto.html', items=items, fotos= fotos, len_f = len(fotos))
 
     except Exception as e:
         print(e)
     finally:
        cur.close()
 
-@app.route('/lista_deseos/<int:id>', methods=['POST'])
-def deseos(id = None):
+#recibe el id del producto y agrega un comentario via AXIOS
+@app.route('/comentarios_api/<int:id>', methods=['POST', 'GET'])
+def comentarios(id=None):
     try:
-        cur = mysql.connect().cursor()
-        if not 'usuario' in session:
-            return redirect('/login')
-        else:
-            cur.execute("INSERT INTO listadeseos (usr_id, id_producto) VALUES (%s, %s)", (session['id'], id))
-            return redirect('/producto/'+id)
+        conn = mysql.connect()
+        cur = conn.cursor()
+        if request.method == 'GET':
+            cur.execute("SELECT t.id_come, t.descripcion, u.nombre, u.foto FROM tbl_comentarios t LEFT JOIN tbl_usuarios u ON t.id_usr = u.id_usr WHERE t.id_producto = %s", (id,))
+            rows = cur.fetchall()
+            comentarios = []
+            for data in rows:
+                comentarios.append({'id': data[0], 'descripcion': data[1], 'usuario': data[2], 'foto': data[3]})
+            return jsonify(comentarios)
+        elif request.method == 'POST':
+            _json = request.get_json(force=True)
+            _descripcion = _json['descripcion']
+            _producto = id
+            _usuario = session['id']
+             
+            cur.execute("INSERT INTO tbl_comentarios (descripcion, id_producto, id_usr) VALUES (%s, %s, %s)", (_descripcion, _producto, _usuario,))
+            conn.commit()
+
+            return jsonify("Comentario agregado correctamente.")
     except Exception as e:
         print(e)
+        return jsonify("Ha ocurrido un error.")
     finally:
         cur.close()
-
 
 @app.route('/nuevo_producto', methods=['GET','POST'])
 def new_prod():
@@ -156,79 +177,5 @@ def categorias():
     finally:
         cur.close()
 
-@app.route('/todo_productos_api')
-@app.route('/todo_productos_api/<string:filter>')
-def todoProductos(filter=None):
-    try:
-        cur = mysql.connect().cursor()
-        if filter == None:
-            cur.execute("SELECT t.id_prod, t.descripcion, t.stock, DATE_FORMAT(t.publicacion, '%d %M %Y'), t.precio FROM tbl_productos t")
-        else:
-            cur.execute("SELECT t.id_prod, t.descripcion, t.stock, DATE_FORMAT(t.publicacion, %s), t.precio FROM tbl_productos t WHERE t.descripcion LIKE  %s", ("%d %M %Y","%" + filter +"%",))
-
-        rows = cur.fetchall()
-        json_items = []
-        content = {}
-        for result in rows:
-            content = {'id': result[0], 'descripcion': result[1], 'stock': result[2], 'fechapublicacion': result[3], 'precio': result[4]} #value = id, text = nombre del pais
-            json_items.append(content)
-        
-        return jsonify(json_items)
-    except Exception as e:
-        print(e)
-    finally:
-        cur.close()
 
 
-@app.route('/todo_tiendas_api')
-@app.route('/todo_tiendas_api/<string:filter>')
-def todoTiendas(filter = None):
-    try:
-        cur = mysql.connect().cursor()
-        if filter == None:
-            cur.execute("SELECT t.id_usr, t.nombre, t.foto  FROM tbl_usuarios t WHERE t.tipo_usuario = 'T'")
-        else:
-            cur.execute("SELECT t.id_usr, t.nombre, t.foto  FROM tbl_usuarios t WHERE t.tipo_usuario = 'T' WHERE t.nombre LIKE %s ", ("%"+ filter +"%"))
-        rows = cur.fetchall()
-        json_items = []
-        content = {}
-        for result in rows:
-            content = {'id': result[0], 'nombre': result[1], 'foto': result[2]} #value = id, text = nombre del pais
-            json_items.append(content)
-        
-        return jsonify(json_items)
-    except Exception as e:
-        print(e)
-    finally:
-        cur.close()
-
-@app.route('/mas_vendidos_api')
-def mas_vendidos():
-    try:
-        cur = mysql.connect().cursor()
-        cur.execute("SELECT t.id_usr, t.nombre, t.foto  FROM tbl_usuarios t WHERE t.tipo_usuario = 'T'")
-        rows = cur.fetchall()
-        json_items = []
-        content = {}
-        for result in rows:
-            content = {'id': result[0], 'nombre': result[1], 'foto': result[2]} #value = id, text = nombre del pais
-            json_items.append(content)
-        
-        return jsonify(json_items)
-    except Exception as e:
-        print(e)
-    finally:
-        cur.close()
-
-@app.route('/canasta_api', methods=['POST'])
-def canasta():
-    try:
-        _json = request.get_json(force=True)
-        _id = _json['id']
-        session['canasta'].append({'id':_id})
-
-        res = jsonify('Producto agregado a la canasta correctamente.')
-        res.status_code = 200
-        return res 
-    except Exception as e:
-        print(e)

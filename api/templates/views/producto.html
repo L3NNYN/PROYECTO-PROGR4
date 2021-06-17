@@ -1,88 +1,75 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Producto</title>
-
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js"></script>
-
-    <link rel="manifest" href="/site.webmanifest">
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/54635cbd22.js" crossorigin="anonymous"></script>
-
-</head>
-<body>
-    <div id="app"> -->
 {% extends "layout.html"%}
 
 {%block title%}Producto{%endblock%}
 
 {%block head%}
-<script src="{{ url_for('static', filename = 'app.js') }}"></script>
+<script src="{{ url_for('static', filename = '/js/producto.js') }}"></script>
 {%endblock%}
 
 {%block body%}
 {% include "navbar.html" %}
-        <div class="row">
-            <div class="col"></div>
-            <div class="col-6">
-                <div class="d-flex flex-column">
-                    <b-carousel
-                        id="carousel-fade"
-                        style="text-shadow: 0px 0px 2px #000"
-                        fade
-                        indicators
+<div class="container">
 
-                    >
-                        {%for i in range(0, len)%}
-                        <b-carousel-slide style="max-width:10rem; max-height:10rem;" img-src="/static/img_productos/{{fotos[i].path}}"></b-carousel-slide>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            <div class="d-flex flex-column">
+                <b-carousel id="carousel-fade" style="text-shadow: 0px 0px 2px #000"fade indicators>
+                {%for i in range(0, len_f)%}
+                    <b-carousel-slide img-src="/static/img_productos/{{fotos[i].path}}"></b-carousel-slide>
+                {%endfor%}
+                
+            </b-carousel>
+            {%if items%}
+                <h2>{{ items[0].descripcion }}</h2>
+                <h3>Precio: {{items[0].precio}}</h3>
+                <h6>Restante: {{items[0].stock}}</h6>
+                <small>{{items[0].publicacion}}</small>
+                <input type="hidden" id="id_producto" value="{{items[0].id}}" />
+            {%endif%}
 
-                        {%endfor%}
+            {% if session.tipo_usuario == 'C' %}
 
-                    </b-carousel>
-                    {%if items%}
-                    <h2>{{ items[0].descripcion }}</h2>
-                    <h3>Precio: {{items[0].precio}}</h3>
-                    <h6>Restante: {{items[0].stock}}</h6>
-                    <small>{{items[0].publicacion}}</small>
-                    {%endif%}
+            <b-button v-if="lista_deseos == 'T'" @click="actualizarListaDeseos()" variant="outline-dark badge-pill m-2"><i class="far fa-heart"></i> Eliminar de lista de deseos</b-button>
+            <b-button v-else @click="actualizarListaDeseos()" variant="primary badge-pill m-2"><i class="fas fa-heart"></i> Agregar a lista de deseos </b-button>
 
-                    {%if session.tipo_usuario == 'C'%}
+            {%endif%}
+            {%if session.tipo_usuario == 'C'%}
+            <b-button @click="agregarCarrito" variant="primary badge-pill m-2"><i class="fas fa-plus"></i> Agregar al carrito</b-button>
+            {%endif%}
+            <b-card header-tag="header" footer-tag="footer" class="mb-5">
+                <template #header>
+                    <h5 class="mb-0">Comentarios</h5>
+                </template>
+                <b-card-text>
+                    <div v-if="comentarios != '' " class="column">
                         
-                    {%endif%}
-                    <b-card border-variant="dark" header-tag="header" footer-tag="footer">
-                        <template #header>
-                            <h4 class="mb-0">Comentarios</h4>
-                        </template>
-                        <b-card-text>
-                              Header and footers using slots.
+                        <b-card border-variant="primary" v-for="item in comentarios" img-top  class="m-2">
+                            <b-card-header class="d-flex flex-row">
+                                <b-img v-bind:width="30" v-bind:height="30" size="5rem" :src="'/static/pics/' + item.foto" rounded="circle"></b-img>
+                                <p class="mx-2">[[item.usuario]]</p>
+                            </b-card-header>
+                            <b-card-text>
+                                <p>[[item.descripcion]]</p>
                             </b-card-text>
-                          <!-- <b-button href="#" variant="primary">Go somewhere</b-button> -->
-                          <template #footer>
-                              <div class="d-flex flex-row">
-
-                                <b-form-input id="hola" type="text" class="badge-pill" placeholder="Deja tu comentario u pregunta"></b-form-input> 
-                                <b-button href="#" variant="primary badge-pill mx-2">Enviar</b-button>
-                                </div>
-                                </template>
                         </b-card>
-                </div>
-            </div>
-            <div class="col"></div>
+                    </div>
+                    
+                    <h5 v-else class="m-2"> No hay comentarios aun </h5>
+                </b-card-text>
+                {%if session.tipo_usuario == 'C'%}
+                <template #footer>
+                    <div class="d-flex flex-row">
+                        <b-form-input id="hola" type="text" v-model="form.descripcion" class="badge-pill" placeholder="Deja tu comentario u pregunta"></b-form-input> 
+                        <b-button @click="postComentario" variant="primary badge-pill mx-2">Enviar</b-button>
+                    </div>
+                </template>
+                {%endif%}
+            </b-card>
         </div>
+    </div>
+    <div class="col"></div>
+</div>
+</div>
 
 {%endblock%}
-    <!-- </div>
-</body>
-</html> -->

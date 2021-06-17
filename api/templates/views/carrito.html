@@ -1,0 +1,29 @@
+{% extends "layout.html"%}
+
+{%block title%}Producto{%endblock%}
+
+{%block head%}
+<script src="{{ url_for('static', filename = '/js/carrito.js') }}"></script>
+{%endblock%}
+
+{%block body%}
+{% include "navbar.html" %}
+<div class="col">
+    <div v-if="productos != '' " class="felx-column">
+        <b-card v-for="item in productos" img-top tag="article" style="width:20rem; height: 15rem;" class="w-50 m-2">
+            <b-card-text class="">
+                <div class="d-flex flex-row">
+                    <h4>[[item.descripcion]]</h4>
+                </div>
+            </b-card-text>
+            <b-card-footer>
+            </b-card-footer>
+        </b-card>
+    </div>
+    <div v-else class="justify-content-center">
+        <h4>Tu carrito esta vacio, prueba agregando productos.</h4>
+        <b-button variant="primary badge-pill" href="/inicio"><i class="fas fa-eye"></i> Explorar</b-button>
+    </div>
+
+</div>
+{%endblock%}

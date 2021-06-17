@@ -23,7 +23,7 @@ def login():
             rows = cur.fetchone()
             if rows and bcrypt.checkpw(_password.encode('utf8'), rows[1].encode('utf8')):
                 session.permanent = False
-                session['canasta'] = []
+                session['carrito'] = []
                 session['usuario'] = rows[0]
                 session['nombre'] = rows[2]
                 session['tipo_usuario'] = rows[3]
