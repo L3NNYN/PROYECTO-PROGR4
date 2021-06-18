@@ -9,21 +9,43 @@
 {%block body%}
 {% include "navbar.html" %}
 <div class="col">
-    <div v-if="productos != '' " class="felx-column">
-        <b-card v-for="item in productos" img-top tag="article" style="width:20rem; height: 15rem;" class="w-50 m-2">
-            <b-card-text class="">
-                <div class="d-flex flex-row">
-                    <h4>[[item.descripcion]]</h4>
-                </div>
-            </b-card-text>
-            <b-card-footer>
-            </b-card-footer>
-        </b-card>
+    <div v-if="productos != '' " class="d-flex flex-column">
+        <h4>Tu carrito: </h4>
+        <b-table v-if="productos != '' " striped hover :items="productos" :fields="fields" >
+            <template slot="[remover]" slot-scope="row">
+                <b-button size="sm" @click="removerCarrito(row.item.id, row.item.tienda_id)" variant="danger"><i class="fas fa-trash-alt"></i></b-button>
+            </template>
+        </b-table>
+        <div class="row my-5">
+            <div class="d-flex flex-column col">
+                <label for="dir_envio">Direccion de envio</label>
+                <b-form-select id="dir_envio" name="dir_envio" v-model="form.direccion_envio" :options="direcciones_envio" class="my-2" required></b-form-select>
+            </div>
+            <div class="d-flex flex-column col">
+                <label for="met_pago">Metodo de pago</label>
+                <b-form-select id="met_pago" name="met_pago" v-model="form.metodo_pago" :options="metodos_pago" class="my-2" required></b-form-select>
+            </div>
+        </div>
+        <b-button class="mx-5" variant="primary badge-pill" v-b-modal.modal>Completar pago</b-button>
     </div>
     <div v-else class="justify-content-center">
         <h4>Tu carrito esta vacio, prueba agregando productos.</h4>
         <b-button variant="primary badge-pill" href="/inicio"><i class="fas fa-eye"></i> Explorar</b-button>
     </div>
 
+    <b-modal id="modal" ref="modal" @hidden="reset" @ok="validar"> 
+        <template slot="modal-header">
+        <h3>Validar Pago</h3>
+        </template>
+        <b-form @submit="validar" @reset="reset">
+            <b-form-group id="input-text" label="CVV" label-for="cvv">
+                <b-form-input id="cvv" v-model="cvv" type="number" required
+                    placeholder="Ingresa el codigo cvv correspondiente"></b-form-input>
+            </b-form-group>
+        <template slot="modal-footer" slot-scope="{ ok, cancel }">
+            <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+            <b-button size="sm" variant="success" @click="ok()">Comprobar CVV</b-button>
+        </template>
+    </b-modal>
 </div>
 {%endblock%}

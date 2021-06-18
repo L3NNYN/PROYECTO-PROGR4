@@ -1,72 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace Multivendor</title>
+{% extends "layout.html"%}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
-    <script src="{{ url_for('static', filename = 'app.js') }}"></script>
+{%block title%}Marketplace Multivendor{%endblock%}
 
-    <!-- <link rel="manifest" href="/site.webmanifest"> -->
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/54635cbd22.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div id="app">
-            <!-- <div class="container"> -->
-                <!-- <div class="row"> -->
-                    <div class="d-flex flex-row">
-                    <div id="index-info" class="col d-flex align-items-center">
-                        <!-- <h1><strong>Marketplace Multivendor</strong></h1> -->
-                        <b-card-img src="{{ url_for('static', filename = '/resources/5865.jpg') }}" alt="Image" class="rounded-0"></b-card-img>
-                    </div>
-                    <div id="index-form" class="col">
-                        <b-form method="POST" class="d-flex flex-row" action="/login">
-                            <b-form-input size="md" id="usuario" name="usuario" v-model="form.nombre" type="text" required
-                            placeholder="Usuario" class="m-2"></b-form-input>
-                            <b-form-input size="md" id="password" name="password" v-model="form.password" placeholder="Password" class="m-2 p-2" required></b-form-input>
-                            <b-button size="sm" variant="outline-primary" name="submit" type="submit" class="m-2 p-2">Login</b-button>
-                        </b-form>
-                        <div class="d-flex flex-column  align-items-start p-2 mt-5">
-                            <b-container>
-                                <b-row align-v="center">
-                                    <b-col>
-                                        <h1>Busca</h1>
-                                        <h1>Compra</h1>
-                                        <h1>Publica</h1>
-                                        <h1>Vende</h1>
-                                        <h1><strong>Todo en un mismo lugar</strong>  
-                                            <!-- <i class="fas fa-shopping-basket"></i> -->
-                                        </h1>
-                                        <a href="/inicio" class="btn btn-outline-dark badge-pill m-2">Echar un vistazo</a>
-                                        <a href="/signup" class="btn btn-primary badge-pill m-2"><strong>Comenzar hoy</strong></a>
-                                    </b-col>
-                                </b-row>
-                            </b-container>
+{%block head%}
+<link rel="stylesheet" href="{{ url_for('static', filename = '/css/style.css') }}">
+<script src="{{ url_for('static', filename = '/js/app.js') }}"></script>
+{%endblock%}
 
-                            <!-- {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                <div class="notification is-danger">
-                                    {{ messages[0] }}. Go to <a href="{{ url_for('inicio') }}">login page</a>.
-                                </div>
-                            {% endif %}
-                            {% endwith %} -->
-
-                        </div>
-                    <!-- </div> -->
-                </div>
-            </div>
+{%block body%}
+    <div class="d-flex flex-row">
+    <div id="index-info" class="col d-flex align-items-center">
+        <!-- <h1><strong>Marketplace Multivendor</strong></h1> -->
+        <b-card-img src="{{ url_for('static', filename = '/resources/5865.jpg') }}" alt="Image" class="rounded-0"></b-card-img>
+    </div>
+    <div id="index-form" class="col">
+        <b-form method="POST" class="d-flex flex-row" action="/login">
+            <b-form-input size="md" id="usuario" name="usuario" v-model="form.nombre" type="text" required
+            placeholder="Usuario" class="m-2"></b-form-input>
+            <b-form-input size="md" id="password" name="password" v-model="form.password" placeholder="Password" class="m-2 p-2" required></b-form-input>
+            <b-button size="sm" variant="outline-primary" name="submit" type="submit" class="m-2 p-2">Login</b-button>
+        </b-form>
+        <div class="d-flex flex-column  align-items-start p-2 mt-5">
+            <b-container>
+                <b-row align-v="center">
+                    <b-col>
+                        <h1>Busca</h1>
+                        <h1>Compra</h1>
+                        <h1>Publica</h1>
+                        <h1>Vende</h1>
+                        <h1><strong>Todo en un mismo lugar</strong>  
+                        </h1>
+                        <a href="/inicio" class="btn btn-outline-dark badge-pill m-2">Echar un vistazo</a>
+                        <a href="/signup" class="btn btn-primary badge-pill m-2"><strong>Comenzar hoy</strong></a>
+                    </b-col>
+                </b-row>
+            </b-container>
         </div>
-    </body>
-    </html>
+    </div>
+</div>
+{%endblock%}

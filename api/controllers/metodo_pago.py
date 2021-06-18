@@ -12,6 +12,32 @@ def metod():
     except Exception as e:
         print(e)
 
+@app.route('/validar_cvv_api', methods=['POST'])
+def cvv():
+    try:
+        if 'usuario' in session: 
+            conn = mysql.connect()
+            cur = conn.cursor()
+            _json = request.get_json(force=True) 
+
+            _metodopago = _json['metodo_pago']
+            _cvv = _json['cvv']
+
+            cur.execute("SELECT t.cvv FROM tbl_metodosdepago t WHERE t.id_pago = %s AND t.usr_id = %s", (_metodopago, session['id'],))
+            row = cur.fetchone()
+            if row and bcrypt.checkpw(_cvv.encode('utf8'), row[0].encode('utf8')):
+                return jsonify({'valido': 'T'})
+            else:
+                return jsonify({'valido': 'F'})
+
+        else:
+            return jsonify('Deberias ingresar como comprador')
+    except Exception as e:
+        print(e)
+        return jsonify('Ha ocurrido un error')
+    finally:
+        cur.close()
+
 #Se accede desde Axios
 @app.route('/metodos_pago_api', methods=['GET', 'POST'])
 def data():

@@ -15,11 +15,11 @@ def tienda():
 def inicio():
     return render_template("views/inicio.html")
 
-@app.route('/paises')
+@app.route('/paises_api')
 def paises():
     try:
         cur = mysql.connect().cursor()
-        cur.execute("SELECT * FROM tbl_paises")
+        cur.execute("SELECT id_pais, descripcion FROM tbl_paises")
         rows = cur.fetchall()
         json_items = []
         content = {}

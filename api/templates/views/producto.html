@@ -26,6 +26,7 @@
                 <h6>Restante: {{items[0].stock}}</h6>
                 <small>{{items[0].publicacion}}</small>
                 <input type="hidden" id="id_producto" value="{{items[0].id}}" />
+                <input type="hidden" id="tienda_id" value="{{items[0].tienda}}" />
             {%endif%}
 
             {% if session.tipo_usuario == 'C' %}

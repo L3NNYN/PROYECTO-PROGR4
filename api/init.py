@@ -18,7 +18,7 @@ app.config['MYSQL_DATABASE_DB'] = 'bd_marketplace'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost' 
 mysql.init_app(app)
 
-app.config['UPLOAD_FOLDER'] = './pics'
+app.config['UPLOAD_FOLDER'] = './static/pics'
 #Fotos
 # app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
@@ -26,6 +26,7 @@ app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
  
 #vistas
 import controllers.index
+import controllers.carrito
 import controllers.auth
 import controllers.user
 import controllers.metodo_pago

@@ -44,7 +44,7 @@ window.onload = function () {
                 this.form.id_pais = pais;
                 this.formTitle = "Editar Direccion";
 
-                await axios.get(apiURL('paises'))
+                await axios.get(apiURL('paises_api'))
                 .then((response) => {
                     this.paises = response.data;
                 }).catch(error => { alertify.error(error); });
@@ -54,11 +54,11 @@ window.onload = function () {
 
             },
             async insertForm(){
-                await axios.get(apiURL('paises'))
+                await axios.get(apiURL('paises_api'))
                 .then((response) => {
                     this.paises = response.data;
                 }).catch(error => { alertify.error(error); });
-                this.formTitle = "Agregar Metodo de Pago"
+                this.formTitle = "Agregar Direccion de Envio"
             },
             save(evt){
                 evt.preventDefault()

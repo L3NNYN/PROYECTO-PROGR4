@@ -18,16 +18,16 @@
                 <template #header>
                     <h5>Nuevo producto</h5>
                 </template>
-                <b-form method="post" action="/nuevo_producto" enctype="multipart/form-data">
+                <b-form method="POST" action="/nuevo_producto" enctype="multipart/form-data">
                     <label for="Descripcion">Descripcion</label>
                     <b-form-input size="md" id="Descripcion" name="descripcion" maxlength="20" v-model="form.descripcion" type="text" required placeholder="Ingresa la descripcion" class="my-2"></b-form-input>
                     <label for="stock">Stock</label>
                     <b-form-input size="md" id="stock" name="stock" maxlength="30"  v-model="form.stock" type="number" required placeholder="Ingresa el stock disponible" class="my-2"></b-form-input>
-                    <label for="precio">Precio</label>
+                    <label for="precio">Precio ($)</label>
                     <b-form-input size="md" id="precio" name="precio" maxlength="15"  v-model="form.precio" type="number" required placeholder="Ingresa el precio" class="my-2"></b-form-input>
                     <label for="tiempoEnvio">Tiempo de Envio</label>
                     <b-form-input size="md" id="tiempoEnvio" name="tiempoEnvio" maxlength="50" v-model="form.tiempoEnvio" type="text" required placeholder="Ingresa el tiempo de envio" class="my-2"></b-form-input>
-                    <label for="costoEnvio">Costo del Envio</label>
+                    <label for="costoEnvio">Costo del Envio ($)</label>
                     <b-form-input size="md" id="costoEnvio" name="costoEnvio" maxlength="150" v-model="form.costoEnvio" type="text" required placeholder="Ingresa el costo de envio" class="my-2"></b-form-input>
                     <label for="categoria">Categoria</label>
                     <div class="d-flex flex-row">
@@ -37,11 +37,9 @@
                     <label for="foto">Fotos del producto</label>
                     <b-form-file size="md" id="foto" name="foto" v-model="form.fotos" required placeholder="Elige las fotos" class="my-2" multiple></b-form-file>
                     
-                </b-form>
-                <template #footer>
                     <a class="btn btn-secondary" href="/productos">Cancelar</a>
                     <b-button size="md" variant="primary" name="submit" type="submit" class="my-2">Guardar</b-button>
-                </template>
+                </b-form>
             </b-card>
             <b-modal id="modal" ref="modal" @hidden="reset" @ok="save"> 
                 <template slot="modal-header">

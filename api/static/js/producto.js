@@ -8,6 +8,7 @@ window.onload = function () {
         delimiters: ['[[', ']]'],
         data: {
             id:'',
+            tienda_id:'',
             comentarios:[],
             form:{
                 descripcion:'',
@@ -17,6 +18,7 @@ window.onload = function () {
         },
         mounted() {
             this.id = document.getElementById('id_producto').value;
+            this.tienda_id = document.getElementById('tienda_id').value;
             this.getComentarios(); // Carga los datos desde el inicio (se creará más adelante) 
             this.getListaDeseo(); //Revisa si existe en la lista de deseos
         }, methods: { //Aquí van las funciones VUE 
@@ -57,7 +59,7 @@ window.onload = function () {
                 }
             },
             agregarCarrito(){
-                axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':this.id}))
+                axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':this.id, 'tienda_id': this.tienda_id}))
                 .then((response) => {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });

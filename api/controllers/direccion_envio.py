@@ -33,7 +33,7 @@ def dir_data():
             _numCasillero = _json['numCasillero']
             _codPostal = _json['codPostal']
             _provincia = _json['provincia']
-            _pais = _json['pais']
+            _pais = _json['id_pais']
             data = (_numCasillero, _codPostal, _provincia, _pais, session['id'],)
 
             conn = mysql.connect()
@@ -41,10 +41,11 @@ def dir_data():
             cur.execute(query, data)
             conn.commit()
 
-            res = jsonify('Metodo de pago ingresado correctamente')
+            res = jsonify('Direccion de envio ingresada correctamente')
             res.status_code = 200
             return res
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()

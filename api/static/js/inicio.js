@@ -33,6 +33,7 @@ window.onload = function () {
                     url = apiURL('todo_tiendas_api');
                 }
                 axios.get(url).then((response) => {
+                    console.log(response.data);
                     this.tiendas = response.data;
                 }).catch(error => { alertify.error(error); });
             },
@@ -57,8 +58,8 @@ window.onload = function () {
                this.getProductos(this.filtro);
                this.getTiendas(this.filtro);
             },
-            agregarCarrito(id){
-                axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':id}))
+            agregarCarrito(id, tienda_id){
+                axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':id, 'tienda_id': tienda_id}))
                 .then((response) => {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });

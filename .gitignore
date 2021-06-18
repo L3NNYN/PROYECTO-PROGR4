@@ -1,1 +1,5 @@
 api/flask_session/*
+
+api/static/img_productos/*
+
+api/static/pics/*

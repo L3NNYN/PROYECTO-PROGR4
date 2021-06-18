@@ -20,7 +20,8 @@
             </div>
             <div id="masVendidos" class="m-5 p-2">
                 <h3>Más vendidos <i class="fas fa-fire"></i></h3>
-                    <div class="container horizontal-scrollable">
+
+                    <div v-if="masVendidos != '' " class="container horizontal-scrollable">
                         <div class="row text-center">
                             <div class="col-xs-4">1</div>
                             <div class="col-xs-4">2</div>
@@ -30,7 +31,8 @@
                             <div class="col-xs-4">6</div>
                             <div class="col-xs-4">7</div>
                         </div>
-                    </div>
+                    </div>                
+                    <h6 v-else class="m-5">No hay productos vendidos hasta el momento.</h6>
             </div>
             <div id="todos" class="m-5 p-2">
                 <h3>Todos los productos <i class="fas fa-box-open"></i></h3>
@@ -47,7 +49,7 @@
                                 <b-card-footer class="d-flex flex-row">
                                     <b-button :href="'/producto/'+item.id" variant="outline-info mx-2">Ver</b-button>
                                     {%if session.tipo_usuario == 'C'%}
-                                    <b-button @click="agregarCarrito(item.id)" variant="primary">Agregar al carrito</b-button>
+                                    <b-button @click="agregarCarrito(item.id, item.tienda_id)" variant="primary">Agregar al carrito</b-button>
                                     {%elif not session.usuario%}
                                     <b-button href="/login" variant="primary">Agregar al carrito</b-button>
                                     {%endif%}
@@ -55,33 +57,11 @@
                         </b-card>
                         
                     </div>
-                    <h4 v-else class="m-5">No hay productos</h4>
+                <h6 v-else class="m-5">No hay productos todavia.</h6>
             </div>
             <div class="m-5 p-2">
                 <h3>Tiendas <i class="fas fa-store"></i></h3>
-                <div class="d-flex flex-row">
-                    <b-card v-for="item in tiendas" img-top tag="article" style="min-width:20rem; min-height: 15rem;" class=" m-2">
-                        <b-card-text class="">
-                            <div class="d-flex flex-row">
-                                <b-img v-bind:width="75" v-bind:height="75" size="5rem" :src="'/static/pics/' + item.foto" rounded="circle"></b-img>
-                                <h4>[[item.nombre]]</h5>
-                            </div>
-                        </b-card-text>
-                        <b-card-footer>
-                            <b-button :href="'/tienda/' +item.id" variant="primary">Ir a tienda</b-button>
-                        </b-card-footer>
-                    </b-card>
-                    <b-card v-for="item in tiendas" img-top tag="article" style="min-width:20rem; min-height: 15rem;" class=" m-2">
-                        <b-card-text class="">
-                            <div class="d-flex flex-row">
-                                <b-img v-bind:width="75" v-bind:height="75" size="5rem" :src="'/static/pics/' + item.foto" rounded="circle"></b-img>
-                                <h4>[[item.nombre]]</h5>
-                            </div>
-                        </b-card-text>
-                        <b-card-footer>
-                            <b-button :href="'/tienda/' +item.id" variant="primary">Ir a tienda</b-button>
-                        </b-card-footer>
-                    </b-card>
+                <div v-if="tiendas != '' " class="d-flex flex-row">
                     <b-card v-for="item in tiendas" img-top tag="article" style="min-width:20rem; min-height: 15rem;" class=" m-2">
                         <b-card-text class="">
                             <div class="d-flex flex-row">
@@ -94,6 +74,7 @@
                         </b-card-footer>
                     </b-card>
                 </div>
+                <h6 v-else class="m-5">No hay tiendas aun.</h6>
             </div>
         </div>
 <!-- </div> -->

@@ -14,7 +14,7 @@ def login():
 
         if request.method == 'GET':
             return render_template('views/login.html')
-        else:
+        elif request.method == 'POST':
             data = request.form
             # _json = request.get_json(force=True) #Obtiene en formato JSON los datos enviados desde el front-End
             _usuario = data['usuario']
@@ -44,7 +44,9 @@ def login():
 
 @app.route('/signup', methods=['POST']) #Sólo podrá ser accedida vía POST
 def singup(): 
-    try: 
+    try:
+        conn = mysql.connect() 
+        cur = conn.cursor() 
         data = request.form
         _nombre = data['nombre']
         _cedula = data['cedula']
@@ -61,10 +63,8 @@ def singup():
         f.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
         _foto = f.filename
 
-        query = "INSERT INTO tbl_usuarios(nombre, cedula, email, direccion, id_pais, foto, tipo_usuario, usuario, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        values = (_nombre, _cedula,_email, _direccion, _pais, _foto, _tipo, _usuario, _password,)
-        conn = mysql.connect() 
-        cur = conn.cursor() 
+        query = "INSERT INTO tbl_usuarios(nombre, cedula, email, direccion, id_pais, foto, tipo_usuario, usuario, password, estado) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s, %s)"
+        values = (_nombre, _cedula,_email, _direccion, _pais, _foto, _tipo, _usuario, _password,'A',)
         cur.execute(query, values) 
         conn.commit() 
         
@@ -73,7 +73,7 @@ def singup():
         res = jsonify('Ha ocurrido un error')
         print(e)
         res.status_code = 200 
-        return res 
+        return redirect('/signup') 
     finally: 
         cur.close()
 

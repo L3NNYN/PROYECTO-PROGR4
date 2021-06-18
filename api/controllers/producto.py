@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from init import mysql
 from init import app
 
+pathFotos = './static/img_productos'
 
 @app.route('/productos', methods=['GET'])
 def productos():
@@ -97,17 +98,18 @@ def comentarios(id=None):
     finally:
         cur.close()
 
+#Se ingresa el producto, con sus respectivas imagenes
 @app.route('/nuevo_producto', methods=['GET','POST'])
 def new_prod():
     try:
+        conn = mysql.connect()
+        cur = conn.cursor()
         if 'usuario' in session:
 
             if request.method == 'GET':
                 return render_template('views/nuevo_producto.html')
 
             elif request.method == 'POST':
-                conn = mysql.connect()
-                cur = conn.cursor()
 
                 data = request.form
                 _descripcion = data['descripcion']
@@ -129,7 +131,7 @@ def new_prod():
                 
                 for f in files:
                     filename = secure_filename(f.filename)
-                    f.save(os.path.join('./img_productos',filename))
+                    f.save(os.path.join(pathFotos, filename))
                     _foto = f.filename
                     fotos.append((_foto, _idProducto))
 
@@ -138,13 +140,15 @@ def new_prod():
                     cur.executemany(query, fotos)
                     conn.commit()
                 
-                msg = 'Producto ingresado correctamente'
-                return render_template('/productos', success=msg)
+                return redirect('/productos')
         else:
             msg = 'Debes iniciar sesion'
             return redirect('/login', info=msg)
     except Exception as e:
         print(e)
+        return redirect('/nuevo_producto')
+    finally:
+        cur.close()
 
 
 @app.route('/categorias_productos_api', methods=['GET','POST'])
