@@ -68,7 +68,7 @@ def singup():
         cur.execute(query, values) 
         conn.commit() 
         
-        return redirect('/inicio')
+        return redirect('/login')
     except Exception as e: 
         res = jsonify('Ha ocurrido un error')
         print(e)

@@ -38,6 +38,50 @@ def cvv():
     finally:
         cur.close()
 
+#Verifica que el metodo de pago tenga el monto suficiente
+@app.route('/validar_monto_api', methods=['POST'])
+def validarPago():
+    try:
+        cur = mysql.connect().cursor()
+        if 'usuario' in session and 'C' == session['tipo_usuario']:
+            _json = request.get_json(force=True)
+            _id = _json['metodo_pago']
+            _monto = _json['monto']
+
+            cur.execute("SELECT 'S' FROM tbl_metodosdepago WHERE id_pago = %s AND saldo >= %s", (_id, _monto,))
+            if cur.fetchone() != '':
+                return jsonify('T')
+            else:
+                return jsonify('F')
+        else:
+            return jsonify('Registrate como comprador')
+
+    except Exception as e:
+        print(e)
+        return jsonify('Ha ocurrido un error en validar')
+    finally:
+        cur.close()
+
+@app.route('/update_monto_api', methods=['PUT'])
+def updateMonto():
+    try:
+        cur = mysql.connect().cursor()
+        if 'usuario' in session and 'C' == session['tipo_usuario']:
+            _json = request.get_json(force=True)
+            _id = _json['metodo_pago']
+            _saldo = _json['saldo']
+            
+            cur.execute("UPDATE tbl_metodosdepago SET saldo = %s WHERE id_pago = %s", (_id,_saldo,))
+
+            return jsonify('Saldo de tu metodo de pago actualizado correctamente')
+        else:
+            return jsonify('Registrate como comprador')
+    except Exception as e:
+        print(e)
+        return jsonify('Ha ocurrido un error en actualizar')
+    finally:
+        cur.close()
+
 #Se accede desde Axios
 @app.route('/metodos_pago_api', methods=['GET', 'POST'])
 def data():

@@ -9,7 +9,7 @@ def direcciones():
     except Exception as e:
         print(e)
 
-@app.route('/direcciones_envio_api', methods=['GET', 'POST'])
+@app.route('/direcciones_envio_api', methods=['GET', 'POST', 'PUT'])
 def dir_data():
     try:
         cur = mysql.connect().cursor()

@@ -1,0 +1,44 @@
+{% extends "layout.html"%}
+
+{%block title%}Redes Sociales{%endblock%}
+
+{%block head%}
+<script src="{{ url_for('static', filename = '/js/redes_sociales.js') }}"></script>
+{%endblock%}
+
+{%block body%}
+{% include "navbar.html" %}
+
+<div class="col d-flex flex-column align-items-center">
+    <b-button @click="insertForm" variant="primary badge-pill" class="my-2" v-b-modal.modal><i class="fas fa-plus"></i> Agregar nueva red social</b-button>
+
+    
+    <b-table v-if="redes_sociales != '' " striped hover :items="redes_sociales" :fields="fields" >
+        <template slot="[actions]" slot-scope="row">
+            <b-button size="sm"
+                @click="editForm(row.item.id, row.item.descripcion)"
+                variant="primary" v-b-modal.modal><i class="fas fa-pen"></i></b-button>
+            <b-button size="sm" @click="deleteData(row.item.id)" variant="danger"><i class="fas fa-trash-alt"></i></b-button>
+        </template>
+    </b-table>
+
+    <h2 v-else>No tienes redes sociales agregadas</h2>
+    
+    <b-modal id="modal" ref="modal" @hidden="reset" @ok="save"> 
+        <template slot="modal-header">
+        <h3>{{formTitle}}</h3>
+        </template>
+        <b-form @submit="save" @reset="reset"> <input type="hidden" id="id" :value="form.id" />
+            <b-form-group id="input-title" label="URL" label-for="descripcion">
+                <b-form-input id="descripcion" v-model="form.descripcion" type="text" required
+                    placeholder="Inserta la URL de la Red Social"></b-form-input>
+            </b-form-group>
+        </b-form> 
+        <template slot="modal-footer" slot-scope="{ ok, cancel }">
+            <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+            <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+        </template>
+    </b-modal>
+</div>
+
+{%endblock%}

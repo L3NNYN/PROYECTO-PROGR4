@@ -7,10 +7,6 @@ from init import mysql
 def render():
     return render_template("views/index.html")
 
-@app.route('/tienda', methods=['GET'])
-def tienda():
-    return render_template("views/tienda.html")
-
 @app.route('/inicio')
 def inicio():
     return render_template("views/inicio.html")

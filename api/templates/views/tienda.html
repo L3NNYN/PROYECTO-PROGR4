@@ -1,88 +1,71 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}">
-    <script src="{{ url_for('static', filename = 'app.js') }}"></script>
-
-
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/54635cbd22.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div id="app"> -->
-
 {% extends "layout.html"%}
 
 {% block title%}Tienda{%endblock%}
 
 {%block head%}
-<!-- <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
-<link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous"> -->
-<script src="{{ url_for('static', filename = '/js/app.js') }}"></script>
-
+<script src="{{ url_for('static', filename = '/js/tienda.js') }}"></script>
 {% endblock %}
 
 {%block body%}
 
 {% include "navbar.html" %}
 <div class="container">
-
     <div class="row">
+        {%if item%}
         <div class="col-4 d-flex flex-column align-items-center justify-content-end">
-            <b-img v-bind="imgProps" rounded="circle" alt="Circle image"></b-img>
-            <h3>NOmbre aqui</h3>
-            <img src="{{ url_for('static', filename = '/resources/estrella.png') }}" style="width: 32px; height: 32px;" alt="">
-            <p>(12)</p>
-            <b-form @submit="puntajetienda" method="post">
-                <!-- <label for="rating-inline">Tu puntuación:</label>
-                    <b-form-rating id="rating-inline" inline v-model="tienda-puntaje"></b-form-rating> -->
+            <!-- <b-img :src="" v-bind="imgProps" rounded="circle" alt="Circle image"></b-img> -->
+            <div>
+                <img src="/static/pics/{{item[0].foto}}" class="rounded" style="width: 12rem; height: 12rem;" alt="Circle image"></img>
+                <input type="hidden" id="id" value="{{item[0].id}}" />
+                <h3>{{item[0].nombre}}</h3>
+                <h4>{{item[0].email}}</h4>
+                <h4> {{item[0].direccion}} </h4>
+                <img src="{{ url_for('static', filename = 'resources/estrella.png') }}" style="width: 32px; height: 32px;" alt="">
+                <p>(12)</p>
+                <!-- <b-form @submit="puntajetienda" method="post">
                     <label for="rating-lg" class="mt-3">Tu puntaje</label>
                     <b-form-rating id="rating-lg" v-model="tienda.value" size="lg"></b-form-rating>
-                </b-form>
+                </b-form> -->
             </div>
-            <div class="col-8">
-                <div id="masVendidos" class="m-5 p-2">
-                    <h3>Más vendidos</h3>
-                    <div class="d-flex flex-row">
-                        {% if name %}
-                        {% for i in range(0, len) %}
-                        <br>
-                        <a href="/">{{name[i]}}</a>
-                        {% endfor %}
-                        {% else %}
-                        <p>asd</p>
-                        {% endif%}
-                    </div>
+        </div>
+        {%endif%}
+        <div class="col-8">
+            <div id="masVendidos" class="m-5 p-2">
+                <h3>Más vendidos</h3>
+                <div v-if="masVendidos != ''" class="d-flex flex-row">
                 </div>
-                <div id="todos" class="m-5 p-2">
-                    <h3>Todos</h3>
+                <h6 v-else class="m-1">No hay productos vendidos aun</h6>
+            </div>
+            <div id="todos" class="m-5 p-2">
+                <h3>Todos</h3>
+                <div class="d-flex flex-row">
                     <b-form-input class="badge-pill" v-model="tienda.search" placeholder="Buscar"></b-form-input>
-                    <div class="d-flex flex-row">
-                    </div>
+                    <b-button @click="search" variant="primary badge-pill ml-2"><i class="fas fa-search"></i></b-button>
                 </div>
+                <div v-if="productos != ''"  class="d-flex flex-row">
+                    <b-card v-for="producto in productos" img-top tag="article" style="min-width:12rem; min-height: 10rem;" class="m-2">
+                        <b-card-header>
+                            <h4>[[producto.descripcion]]</h5>
+                        </b-card-header>
+                        <b-card-text class="p-2">
+                            <h6>Precio: [[producto.precio]]</h6>
+                            <h6>Categoria: [[producto.categoria]]</h6>
+                            <h6>Inventario: [[producto.stock]]</h6>
+                            <small>[[producto.publicacion]]</small>
+                        </b-card-text>
+                        <b-card-footer class="d-flex flex-column align-items-center">
+                            <div v-if="tienda.id == producto.tienda_id" class="div">
+                                <b-button :href="'/producto/'+ producto.id" variant="outline-info mx-2">Ver</b-button>
+                                <b-button @click="agregarCarrito(producto.id, producto.tienda_id)" variant="primary">Agregar al carrito</b-button>        
+                            </div>
+                            <a v-else class="btn btn-primary" href="/edit_producto/{{item.id}}"><i class="fas fa-pen"></i> Editar</a>
+                        </b-card-footer>
+                    </b-card>
+                </div>
+                <h6 v-else class="m-1">No hay productos</h6>
             </div>
         </div>
     </div>
+</div>
         
 {% endblock %}
-    <!-- </div>
-</body>
-</html> -->
-
-
-                        <!-- <b-carousel-slide img-src="/static/img_productos/109760596_3275620912501742_7735544260507504970_n.jpg"></b-carousel-slide> -->

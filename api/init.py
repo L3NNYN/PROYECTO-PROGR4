@@ -33,3 +33,5 @@ import controllers.metodo_pago
 import controllers.direccion_envio
 import controllers.producto
 import controllers.inicio
+import controllers.redes_sociales
+import controllers.tienda

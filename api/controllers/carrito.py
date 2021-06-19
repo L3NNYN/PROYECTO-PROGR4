@@ -12,8 +12,7 @@ def carrito():
     except Exception as e:
         print(e)
 
-
-@app.route('/carrito_api', methods=['GET', 'PUT'])
+@app.route('/carrito_api', methods=['GET', 'POST'])
 def carrito_api():
     try:
         conn = mysql.connect()
@@ -30,8 +29,31 @@ def carrito_api():
                     if item:
                         productos.append({'descripcion': item[0], 'precio': item[1], 'categoria': item[2], 'tiempo envio': item[3], 'costo envio': item[4], 'tienda': item[5], 'id': item[6], 'tienda_id': item[7]})
             return jsonify(productos)
+        elif request.method == 'POST':
+            _json = request.get_json(force=True)
+            _metodopago = _json['metodo_pago']
+            _direccionenvio = _json['direccion_envio']
+            _comprador = session['id']
+
+            evaluados = []
+            for p in session['carrito']:
+                _tienda = p['tienda_id']
+
+                if not _tienda in evaluados: #
+                    evaluados.append(_tienda)
+                    # cur.execute("INSERT INTO tbl_compras (fecha, id_pago, id_comprador, id_dire, id_tienda) VALUES (now(), %s, %s, %s, %s)", (_metodopago, _comprador, _direccionenvio,_tienda))
+                else:
+                    print('ya esta')
+            # if len(session['carrito']) != '':
+            #     cur.execute("SELECT ")
+            # else:
+            #     return jsonify('No hay productos en la canasta')
+            session['carrito'] = []
+
+            return jsonify('Pago completado exitosamente')
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()
 
@@ -61,7 +83,7 @@ def canasta2():
         _tiendaid = _json['tienda_id']
 
         session['carrito'].remove({'id':_id, 'tienda_id': _tiendaid})
-        res = jsonify('Producto eliminado del carrito correctamente.')
+        res = jsonify('Producto removido.')
         
         res.status_code = 200
         return res 

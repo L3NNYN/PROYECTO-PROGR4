@@ -15,6 +15,8 @@ window.onload = function () {
             form:{
                 metodo_pago:'',
                 direccion_envio:'',
+                monto: 0,
+                saldo_tarjeta:'',
             },
             cvv:'',
         },
@@ -30,7 +32,27 @@ window.onload = function () {
                 //Obtiene prodcutos en el carrito
                 axios.get(apiURL('carrito_api')).then((response) => {
                     this.productos = response.data;
+                    this.calcularMonto();
                 }).catch(error => { alertify.error(error); });
+            },
+            validarMetodoPago(){
+                axios.post(apiURL('validar_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto':this.form.monto}))
+                .then((response) => {
+                    this.getData();
+                    alertify.success(response.data);
+                }).catch(error => { alertify.error(error); });
+            },
+            actualizarMetodoPago(){
+                axios.put(apiURL('update_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto': this.form.monto}))
+                .then((response) => {
+                    alertify.success(response.data);
+                }).catch(error => { alertify.error(error); });
+            },
+            calcularMonto(){
+                this.form.monto = 0;
+                this.productos.forEach((item) =>{
+                    this.form.monto += (item['costo envio'] + item['precio']);
+                });
             },
             getDirecciones(){
                 //Obtener direcciones de envio
@@ -53,7 +75,11 @@ window.onload = function () {
                 }).catch(error => { alertify.error(error); });
             },
             completarPago(){
-                console.log('hola');
+                axios.post(apiURL('carrito_api'), JSON.stringify(this.form))
+                .then((response) => {
+                    this.getData();
+                    alertify.success(response.data);
+                }).catch(error => { alertify.error(error); });
             },
             validar(){
                 if(this.cvv != '' && this.metodo_pago != ''){

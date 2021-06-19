@@ -119,7 +119,7 @@ def new_prod():
                 _costoEnvio = data['costoEnvio']
                 _categoria = data['categoria']
 
-                query = ("INSERT INTO tbl_productos (descripcion, stock, publicacion, precio, tiempoEnvio, costoEnvio, id_categoria, usr_id) VALUES ( %s,%s, now(),%s,%s,%s,%s,%s)")
+                query = ("INSERT INTO tbl_productos (descripcion, stock, publicacion, precio, tiempoEnvio, costoEnvio, id_categoria, usr_id) VALUES ( %s,%s,now(),%s,%s,%s,%s,%s)")
                 values = (_descripcion, _stock, _precio, _tiempoEnvio, _costoEnvio, _categoria, session['id'])
 
                 cur.execute(query, values)

@@ -9,13 +9,14 @@
 {%block body%}
 {% include "navbar.html" %}
 <div class="col">
-    <div v-if="productos != '' " class="d-flex flex-column">
-        <h4>Tu carrito: </h4>
+    <div v-if="productos != '' " class="d-flex flex-column my-1">
+        <h4>Tu carrito </h4>
         <b-table v-if="productos != '' " striped hover :items="productos" :fields="fields" >
             <template slot="[remover]" slot-scope="row">
-                <b-button size="sm" @click="removerCarrito(row.item.id, row.item.tienda_id)" variant="danger"><i class="fas fa-trash-alt"></i></b-button>
+                <b-button size="sm" @click="removerCarrito(row.item.id, row.item.tienda_id)" variant="danger badge-pill"><i class="fas fa-times"></i></b-button>
             </template>
         </b-table>
+        <h4>&nbsp;&nbsp;Cantidad de productos: [[productos.length]] &nbsp;&nbsp; <strong>Total: $[[form.monto]]</strong></h4>
         <div class="row my-5">
             <div class="d-flex flex-column col">
                 <label for="dir_envio">Direccion de envio</label>
@@ -28,8 +29,8 @@
         </div>
         <b-button class="mx-5" variant="primary badge-pill" v-b-modal.modal>Completar pago</b-button>
     </div>
-    <div v-else class="justify-content-center">
-        <h4>Tu carrito esta vacio, prueba agregando productos.</h4>
+    <div v-else class="col d-flex flex-column align-items-center p-2">
+        <h4 class="m-5">Tu carrito esta vacio, prueba agregando productos.</h4>
         <b-button variant="primary badge-pill" href="/inicio"><i class="fas fa-eye"></i> Explorar</b-button>
     </div>
 
