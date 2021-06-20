@@ -5,7 +5,7 @@ from init import app
 @app.route('/carrito')
 def carrito():
     try:
-        if 'usuario' in session:
+        if 'usuario' in session and session['tipo_usuario'] == 'C':
             return render_template('views/carrito.html')
         else:
             return redirect('/login')
@@ -92,10 +92,8 @@ def canasta2():
         _json = request.get_json(force=True)
         _id = _json['id']
         _tiendaid = _json['tienda_id']
-
         session['carrito'].remove({'id':_id, 'tienda_id': _tiendaid})
         res = jsonify('Producto removido.')
-        
         res.status_code = 200
         return res 
     except Exception as e:
