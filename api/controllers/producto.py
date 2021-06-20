@@ -181,5 +181,3 @@ def categorias():
     finally:
         cur.close()
 
-
-

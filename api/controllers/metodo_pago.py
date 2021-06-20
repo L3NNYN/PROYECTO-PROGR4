@@ -49,7 +49,7 @@ def validarPago():
             _monto = _json['monto']
 
             cur.execute("SELECT 'S' FROM tbl_metodosdepago WHERE id_pago = %s AND saldo >= %s", (_id, _monto,))
-            if cur.fetchone() != '':
+            if cur.fetchone() != None:
                 return jsonify('T')
             else:
                 return jsonify('F')
@@ -65,13 +65,15 @@ def validarPago():
 @app.route('/update_monto_api', methods=['PUT'])
 def updateMonto():
     try:
-        cur = mysql.connect().cursor()
+        conn = mysql.connect()
+        cur = conn.cursor()
         if 'usuario' in session and 'C' == session['tipo_usuario']:
             _json = request.get_json(force=True)
             _id = _json['metodo_pago']
-            _saldo = _json['saldo']
+            _monto= _json['monto']
             
-            cur.execute("UPDATE tbl_metodosdepago SET saldo = %s WHERE id_pago = %s", (_id,_saldo,))
+            cur.execute("UPDATE tbl_metodosdepago SET saldo = (saldo - %s) WHERE id_pago = %s", (_monto,_id,))
+            conn.commit()
 
             return jsonify('Saldo de tu metodo de pago actualizado correctamente')
         else:

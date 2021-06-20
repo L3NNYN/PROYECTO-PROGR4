@@ -34,26 +34,37 @@ def carrito_api():
             _metodopago = _json['metodo_pago']
             _direccionenvio = _json['direccion_envio']
             _comprador = session['id']
+            _total = _json['monto']
 
             evaluados = []
             for p in session['carrito']:
                 _tienda = p['tienda_id']
 
-                if not _tienda in evaluados: #
+                if not _tienda in evaluados: 
                     evaluados.append(_tienda)
-                    # cur.execute("INSERT INTO tbl_compras (fecha, id_pago, id_comprador, id_dire, id_tienda) VALUES (now(), %s, %s, %s, %s)", (_metodopago, _comprador, _direccionenvio,_tienda))
-                else:
-                    print('ya esta')
-            # if len(session['carrito']) != '':
-            #     cur.execute("SELECT ")
-            # else:
-            #     return jsonify('No hay productos en la canasta')
-            session['carrito'] = []
+                    cur.execute("INSERT INTO tbl_compras (fecha, total, id_pago, id_comprador, id_dire, id_tienda) VALUES (now(), %s, %s, %s, %s, %s)", (_total, _metodopago,_comprador, _direccionenvio,_tienda))
+                    conn.commit()
+                    _idcompra = cur.lastrowid
 
+                    prod_evaluados = []
+                    for i in session['carrito']: #compara los productos si corresponden a la tienda actual, hace update o insert tambien actualiza el stock de las tiendas
+                        if i['tienda_id'] == _tienda:
+                            if not i['id'] in prod_evaluados:
+                                prod_evaluados.append(i['id'])
+                                cur.execute("INSERT INTO productos ( id_comp, id_prod, cantidad) VALUES (%s, %s, 1)", (_idcompra, i['id'], ))
+                                conn.commit()
+                            else:
+                                cur.execute("UPDATE productos SET cantidad = (cantidad + 1) WHERE id_comp =%s AND id_prod = %s", (_idcompra, i['id'], ))
+                                conn.commit()
+                            
+                            cur.execute("UPDATE tbl_productos SET stock = (stock-1) WHERE id_prod = %s", (i['id'],))
+                            conn.commit()
+
+            session['carrito'] = []
             return jsonify('Pago completado exitosamente')
     except Exception as e:
         print(e)
-        return jsonify('Ha ocurrido un error')
+        return jsonify('Ha ocurrido un error en carrito api')
     finally:
         cur.close()
 

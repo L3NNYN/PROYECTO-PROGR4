@@ -26,7 +26,7 @@ window.onload = function () {
             this.getDataSignUp();
         }, methods: { //Aquí van las funciones VUE 
             getDataSignUp(){
-                axios.get(apiURL('paises'))
+                axios.get(apiURL('paises_api'))
                 .then((response) => {
                     this.paises = response.data;
                 }).catch(error => { alertify.error(error); });

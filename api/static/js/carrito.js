@@ -35,19 +35,6 @@ window.onload = function () {
                     this.calcularMonto();
                 }).catch(error => { alertify.error(error); });
             },
-            validarMetodoPago(){
-                axios.post(apiURL('validar_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto':this.form.monto}))
-                .then((response) => {
-                    this.getData();
-                    alertify.success(response.data);
-                }).catch(error => { alertify.error(error); });
-            },
-            actualizarMetodoPago(){
-                axios.put(apiURL('update_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto': this.form.monto}))
-                .then((response) => {
-                    alertify.success(response.data);
-                }).catch(error => { alertify.error(error); });
-            },
             calcularMonto(){
                 this.form.monto = 0;
                 this.productos.forEach((item) =>{
@@ -77,7 +64,25 @@ window.onload = function () {
             completarPago(){
                 axios.post(apiURL('carrito_api'), JSON.stringify(this.form))
                 .then((response) => {
-                    this.getData();
+                    this.getProductos();
+                    //Rebaja el monto en el metodo de pago
+                    this.actualizarMetodoPago();
+                    alertify.success(response.data);
+                }).catch(error => { alertify.error(error); });
+            },
+            validarMetodoPago(){
+                axios.post(apiURL('validar_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto':this.form.monto }))
+                .then((response) => {
+                    if(response.data == 'T'){
+                        this.completarPago();
+                    } else {
+                        alertify.error('Fondos insuficientes.');
+                    }
+                }).catch(error => { alertify.error(error); });
+            },
+            actualizarMetodoPago(){
+                axios.put(apiURL('update_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto': this.form.monto}))
+                .then((response) => {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });
             },
@@ -86,15 +91,15 @@ window.onload = function () {
                     axios.post(apiURL('validar_cvv_api'), JSON.stringify({'cvv': this.cvv, 'metodo_pago': this.form.metodo_pago}))
                     .then((response) => {
                         if(response.data['valido'] == 'T'){
-                            this.completarPago();
+                            this.validarMetodoPago();
                         } else {
                             alertify.error('CVV incorrecto.');
                         }
                     }).catch(error => { alertify.error(error); });
                 } else {
+                    alertify.error('Selecciona un metodo de pago.');
                     return;
                 }
-                
             },
             reset(){
                 this.cvv = '';
