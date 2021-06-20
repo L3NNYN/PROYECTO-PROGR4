@@ -38,7 +38,7 @@
             </div>
             <div id="todos" class="m-5 p-2">
                 <h3>Todos</h3>
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row my-3">
                     <b-form-input class="badge-pill" v-model="tienda.search" placeholder="Buscar"></b-form-input>
                     <b-button @click="search" variant="primary badge-pill ml-2"><i class="fas fa-search"></i></b-button>
                 </div>
@@ -64,6 +64,16 @@
                 </div>
                 <h6 v-else class="m-1">No hay productos</h6>
             </div>
+            {%if profile != '' and profile == 'T' %}
+                <div id="reportes" class="m-5 p-2">
+                    <h3>Reportes</h3>
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row">
+                            <h5></h5>
+                        </div>
+                    </div>
+                </div>
+            {%endif%}
         </div>
     </div>
 </div>

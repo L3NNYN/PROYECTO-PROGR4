@@ -8,12 +8,21 @@ def tienda(id=None):
     try:
         conn = mysql.connect()
         cur = conn.cursor()
+        
         if 'usuario' in session:
-            cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email FROM tbl_usuarios t WHERE t.estado = 'A' AND t.id_usr = %s", (session['id'],))
+            if id == None:
+                cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email FROM tbl_usuarios t WHERE t.estado = 'A' AND t.id_usr = %s", (session['id'],))
+            else:
+                cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email FROM tbl_usuarios t WHERE t.estado = 'A' AND t.id_usr = %s", (id,))
+
             row = cur.fetchone()
             data = []
             data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'id': session['id']})
-        return render_template("views/tienda.html", item=data)
+
+        profile = 'F'
+        if session['id'] == id or id == None: profile = 'T' #si esta accediendo desde la navbar o desde el inicio
+
+        return render_template("views/tienda.html", item=data, profile=profile)
     except Exception as e:
         print(e)
         return jsonify('Ha ocurrido un error')

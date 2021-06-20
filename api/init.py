@@ -35,3 +35,4 @@ import controllers.producto
 import controllers.inicio
 import controllers.redes_sociales
 import controllers.tienda
+import controllers.reportes
