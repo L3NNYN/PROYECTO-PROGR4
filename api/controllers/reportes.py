@@ -2,6 +2,20 @@ from flask import jsonify, request, render_template, redirect, session, flash
 from init import app
 from init import mysql
 
+#Devuelve la pagina de reportes
+@app.route('/reportes')
+def reportes():
+    try:
+        cur = mysql.connect().cursor()
+        if 'usuario' in session:
+            return render_template('views/reportes.html')
+        else:
+            return redirect('/login')
+    except Exception as e:
+        print(e)
+        return jsonify('Ha ocurrido un error')
+    finally:
+        cur.close()
 
 @app.route('/reporte_ventas_api')
 def ventas():
@@ -39,7 +53,7 @@ def facturas():
 
         facturas = []
         data = {}
-        cur.execute("SELECT t.id_comp, t.fecha, t.total, p.nombrepropietario, p.numero, u.nombre, d.numcasillero, d.provincia FROM tbl_compras t LEFT JOIN tbl_metodosdepago p ON t.id_pago = p.id_pago LEFT JOIN tbl_usuarios u ON u.usr_id = t.id_tienda LEFT JOIN tbl_direccionesdeenvio d ON d.id_dire = d.id_dire WHERE t.id_comprador = %s", (session['id'],))
+        cur.execute("SELECT t.id_comp, DATE_FORMAT(t.fecha, %s), t.total, p.nombrepropietario, p.numero, u.nombre, d.numcasillero, d.provincia FROM tbl_compras t LEFT JOIN tbl_metodosdepago p ON t.id_pago = p.id_pago LEFT JOIN tbl_usuarios u ON u.id_usr = t.id_tienda LEFT JOIN tbl_direccionesdeenvio d ON d.id_dire = d.id_dire WHERE t.id_comprador = %s", ("%d %M %Y",session['id'],))
         rows = cur.fetchall()
         for row in rows:
             data = {'id': row[0], 'fecha':row[1], 'total':row[2], 'metodopago':{'propietario': row[3], 'numero': row[4]}, 'tienda': row[5], 'direccionenvio': {'casillero':row[6], 'provincia':row[7]}, 'productos':[]}
@@ -47,7 +61,7 @@ def facturas():
             cur.execute("SELECT p.descripcion, p.tiempoenvio, p.costoenvio, t.cantidad, p.precio FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod WHERE t.id_comp = %s", (data['id'], ))
             prods = cur.fetchall()
             for prod in prods:
-                data['productos'].append({'descripcion': prod[0], 'tiempoenvio': prod[1], 'costoenvio':prod[2], 'cantidad':prod[3], 'precio':prod[4]})
+                data['productos'].append({'descripcion': prod[0], 'tiempo envio': prod[1], 'costo envio':prod[2], 'cantidad':prod[3], 'precio':prod[4]})
             
             facturas.append(data)
 

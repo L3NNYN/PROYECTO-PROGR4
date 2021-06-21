@@ -12,8 +12,7 @@
 <div class="container">
     <div class="row">
         {%if item%}
-        <div class="col-4 d-flex flex-column align-items-center justify-content-end">
-            <!-- <b-img :src="" v-bind="imgProps" rounded="circle" alt="Circle image"></b-img> -->
+        <div class="col-4 d-flex flex-column align-items-center p-2">
             <div>
                 <img src="/static/pics/{{item[0].foto}}" class="rounded" style="width: 12rem; height: 12rem;" alt="Circle image"></img>
                 <input type="hidden" id="id" value="{{item[0].id}}" />
@@ -22,10 +21,8 @@
                 <h4> {{item[0].direccion}} </h4>
                 <img src="{{ url_for('static', filename = 'resources/estrella.png') }}" style="width: 32px; height: 32px;" alt="">
                 <p>(12)</p>
-                <!-- <b-form @submit="puntajetienda" method="post">
-                    <label for="rating-lg" class="mt-3">Tu puntaje</label>
-                    <b-form-rating id="rating-lg" v-model="tienda.value" size="lg"></b-form-rating>
-                </b-form> -->
+                <label for="rating-sm-no-border">Calificar:</label>
+                <b-form-rating id="rating-sm-no-border" v-model="value" no-border size="sm"></b-form-rating>
             </div>
         </div>
         {%endif%}
