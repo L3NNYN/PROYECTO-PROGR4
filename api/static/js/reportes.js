@@ -11,16 +11,22 @@ window.onload = function () {
             tipo: '',
             wenas: 'JEJE',
             
-
+            suscripciones:{
+                tiendas:[],
+                productos:[]
+            },
             reportes:{
                 facturas:[],
                 ventas: [],
-                suscripciones: [],
                 compras: [],
                 ventas: []
             },
             fields:{
-                facturas:['descripcion', 'tiempo envio', 'costo envio', 'cantidad', 'precio']
+                facturas:['descripcion', 'tiempo envio', 'costo envio', 'cantidad', 'precio'],
+                suscripciones:{
+                    tiendas:['nombre', 'email'],
+                    productos:['descripcion', 'categoria', 'precio', 'tienda']
+                }
             }
 
         },
@@ -32,14 +38,19 @@ window.onload = function () {
             },
             getFacturas(){
                 axios.get(apiURL('reporte_facturas_api')).then((response) => {
-                    // this.reportes.facturas = response.data;
+                    this.reportes.facturas = response.data;
+                    console.log(response.data);
                 }).catch(error => { alertify.error(error); });
             },
             getVentas(){
 
             },
             getSuscripciones(){
-
+                axios.get(apiURL('reporte_suscripciones_api')).then((response) => {
+                    var aux = this.suscripciones;
+                    aux.productos = response.data[0];
+                    aux.tiendas  = response.data[1];
+                }).catch(error => { alertify.error(error); });
             },
             clean(){
                 this.reportes.facturas = [];
@@ -73,7 +84,6 @@ window.onload = function () {
                     alertify.error("Seleciona un tipo de reporte");
                 } else {
                     this.tipo = this.select;
-                    // this.select = '';
                     this.clean();
                     this.seleccion();
                 }

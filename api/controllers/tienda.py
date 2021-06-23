@@ -25,7 +25,7 @@ def tienda(id=None):
         return render_template("views/tienda.html", item=data, profile=profile)
     except Exception as e:
         print(e)
-        return jsonify('Ha ocurrido un error')
+        return redirect('/login')
     finally:
         cur.close()
 
@@ -44,6 +44,78 @@ def getProductos():
         data = []
         data.append(productos)
         return jsonify(data)
+    except Exception as e:
+        print(e)
+        return jsonify('Ha ocurrido un error')
+    finally:
+        cur.close()
+
+@app.route('/seguimiento_api/<int:id>', methods=['POST', 'GET'])
+def seguimiento(id=None):
+    try:
+        conn = mysql.connect()
+        cur = conn.cursor()
+
+        if not 'usuario' in session:
+            return jsonify('Es necesario loguearse')
+        else:
+            res = ''
+            if request.method == 'POST':
+                _json = request.get_json(force=True)
+                if _json['seguir'] == 'T':
+                    cur.execute("INSERT INTO seguir (id_comprador, id_tienda) VALUES (%s, %s)", (session['id'], id))
+                    conn.commit()
+                    res = "Ahora sigues a esta tienda."
+                elif _json['seguir'] == 'F':
+                    cur.execute("DELETE FROM seguir WHERE id_comprador = %s AND id_tienda = %s", (session['id'], id))
+                    conn.commit()
+                    res = "Has dejado de seguir esta tienda."
+
+            elif request.method == 'GET':
+                cur.execute("SELECT * FROM seguir WHERE id_comprador = %s AND id_tienda = %s", (session['id'], id))
+                row = cur.fetchone()
+                if row:
+                    res = 'T'
+                else:
+                    res = 'F'
+
+        return jsonify(res)
+    except Exception as e:
+        print(e)
+        return jsonify('Ha ocurrido un error')
+    finally:
+        cur.close()
+
+@app.route('/calificacion_tienda_api/<int:id>', methods=['POST', 'GET', 'PUT'])
+def calificacionTienda(id=None):
+    try:
+        conn = mysql.connect()
+        cur = conn.cursor()
+
+        if not 'usuario' in session:
+            return jsonify('Es necesario loguearse')
+        else:
+            res = ''
+            if request.method == 'POST':
+                _json = request.get_json(force=True)
+                if _json['seguir'] == 'T':
+                    cur.execute("INSERT INTO seguir (id_comprador, id_tienda) VALUES (%s, %s)", (session['id'], id))
+                    conn.commit()
+                    res = "Ahora sigues a esta tienda."
+                elif _json['seguir'] == 'F':
+                    cur.execute("DELETE FROM seguir WHERE id_comprador = %s AND id_tienda = %s", (session['id'], id))
+                    conn.commit()
+                    res = "Has dejado de seguir esta tienda."
+
+            elif request.method == 'GET':
+                cur.execute("SELECT * FROM seguir WHERE id_comprador = %s AND id_tienda = %s", (session['id'], id))
+                row = cur.fetchone()
+                if row:
+                    res = 'T'
+                else:
+                    res = 'F'
+
+        return jsonify(res)
     except Exception as e:
         print(e)
         return jsonify('Ha ocurrido un error')

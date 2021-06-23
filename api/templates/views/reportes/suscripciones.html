@@ -1,1 +1,32 @@
-<p>[[wenas]]</p>   
+<div class="container">
+<div class="row">
+    <div class="col-6 ">
+        <h3>Tiendas</h3>
+        <div v-if="suscripciones.tiendas != '' " class="my-5">
+            <b-table hover :items="suscripciones.tiendas" :fields="fields.suscripciones.tiendas">
+                <template slot="[nombre]" slot-scope="row">
+                    <b-img variant="mx-4" v-bind:width="40" v-bind:height="40" size="3rem" :src="'/static/pics/' + row.item.foto" rounded="circle"></b-img>
+                    <b-link :href="'/tienda/' +row.item.id">[[row.item.nombre]]</b-link>
+                </template>
+            </b-table>
+            <h5>&nbsp;&nbsp;Total: [[suscripciones.tiendas.length]] &nbsp;&nbsp; </h5>
+        </div>
+        <h6 class="m-5" v-else>No sigues ninguna tienda</h6>
+        
+    </div>
+    <div class="col-6">
+
+        <h3>Lista de deseos</h3>
+        <div v-if="suscripciones.productos != '' " class="my-5">
+            <b-table hover :items="suscripciones.productos" :fields="fields.suscripciones.productos">
+                <template slot="[descripcion]" slot-scope="row">
+                    <b-link :href="'/producto/' +row.item.id">[[row.item.descripcion]]</b-link>
+                    <!-- <b-button :href="'/tienda/' +item.id" variant="primary">[[row.item.descripcion]]</b-button> -->
+                </template>
+            </b-table>
+            <h5>&nbsp;&nbsp;Total: [[suscripciones.productos.length]] &nbsp;&nbsp; </h5>
+        </div>
+        <h6 class="m-5" v-else>No tienes productos en tu lista de deseos</h6>
+    </div>
+</div>
+</div>

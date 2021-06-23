@@ -78,20 +78,20 @@ def suscripciones():
         cur = mysql.connect().cursor()
         data = []
         tiendas = []
-        cur.execute("SELECT u.id_usr, u.nombre, u.email FROM seguir t LEFT JOIN tbl_usuarios u ON u.id_usr = t.id_tienda WHERE t.id_comprador =%s ", (session['id'],))
+        cur.execute("SELECT u.id_usr, u.nombre, u.email, u.foto FROM seguir t LEFT JOIN tbl_usuarios u ON u.id_usr = t.id_tienda WHERE t.id_comprador =%s ", (session['id'],))
         rows = cur.fetchall()
         for row in rows:
-            tiendas.append({'id': row[0], 'nombre':row[1], 'email':row[2]})
+            tiendas.append({'id': row[0], 'nombre':row[1], 'foto': row[3], 'email':row[2]})
 
         productos = []
-        cur.execute("SELECT u.descripcion, c.descripcion, u.precio FROM listadeseos t LEFT JOIN tbl_productos u ON u.id_prod = t.id_producto LEFT JOIN tbl_categoriasproductos c ON u.id_categoria = c.id_catp WHERE t.usr_id =%s ", (session['id'],))
+        cur.execute("SELECT u.descripcion, c.descripcion, u.precio, b.nombre, u.id_prod FROM listadeseos t LEFT JOIN tbl_productos u ON u.id_prod = t.id_producto LEFT JOIN tbl_categoriasproductos c ON u.id_categoria = c.id_catp LEFT JOIN tbl_usuarios b ON u.usr_id = b.id_usr WHERE t.usr_id =%s ", (session['id'],))
         rows = cur.fetchall()
         for row in rows:
-            productos.append({'id': row[0], 'nombre':row[1], 'email':row[2]})
+            productos.append({'id':row[4],'descripcion': row[0], 'categoria':row[1], 'precio':row[2], 'tienda': row[3]})
 
 
-        data.append({'productos':productos})
-        data.append({'tiendas': tiendas})
+        data.append(productos)
+        data.append(tiendas)
         return jsonify(data)
 
     except Exception as e:

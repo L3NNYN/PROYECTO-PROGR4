@@ -6,8 +6,6 @@ from init import app
 @app.route('/perfil', methods=['GET', 'PUT'])
 def pefil():
     try:
-        # if !session['usuario']:
-        #     return redirect('/index')
         cur = mysql.connect().cursor()
         
         if request.method == 'GET':

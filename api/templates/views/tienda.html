@@ -4,6 +4,7 @@
 
 {%block head%}
 <script src="{{ url_for('static', filename = '/js/tienda.js') }}"></script>
+<script src="https://unpkg.com/bootstrap-vue@2.12.0/dist/bootstrap-vue.js"></script>
 {% endblock %}
 
 {%block body%}
@@ -21,8 +22,13 @@
                 <h4> {{item[0].direccion}} </h4>
                 <img src="{{ url_for('static', filename = 'resources/estrella.png') }}" style="width: 32px; height: 32px;" alt="">
                 <p>(12)</p>
-                <label for="rating-sm-no-border">Calificar:</label>
-                <b-form-rating id="rating-sm-no-border" v-model="value" no-border size="sm"></b-form-rating>
+                {%if session.usuario != '' and session.tipo_usuario == 'C' %}
+                <b-button v-if="seguir == 'T'" @click="actualizarSeguimiento('F')" variant="outline-dark badge-pill m-2"><i class="far fa-heart"></i> Dejar de seguir</b-button>
+                <b-button v-else @click="actualizarSeguimiento('T')" variant="primary badge-pill m-2"><i class="fas fa-heart"></i> Seguir</b-button>
+                {%endif%}
+                <br>
+                <label for="rating-sm-no-border">Calificacion:</label>
+                <b-form-rating id="rating-sm-no-border" variant="warning" no-border v-model="tienda.value" size="lg"></b-form-rating>
             </div>
         </div>
         {%endif%}

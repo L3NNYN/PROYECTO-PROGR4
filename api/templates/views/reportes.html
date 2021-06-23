@@ -10,7 +10,7 @@
 {% include "navbar.html" %}
 <div class="col d-flex flex-column align-items-center p-2">
    <h4 class="my-2">Tipo de reporte</h4>
-   <div @click="clean()" class="my-2 d-flex flex-row">
+   <div class="my-2 d-flex flex-row">
        {% if session.tipo_usuario == 'C' %}
        <b-form-radio v-model="select" name="tipo" value="C" class="mx-2">Compras</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="F" class="mx-2">Facturas</b-form-radio>
@@ -22,25 +22,32 @@
     </div>
     <b-button @click="mostrar" variant="primary badge-pill my-4">Mostrar</b-button>
 </div>
+<div class="container">
 
-<div v-if="reportes.compras != '' ">
-    {% include "views/reportes/compras.html" %}
-</div>
-
-<div v-if="tipo == 'F' ">
-    {% include "views/reportes/factura.html" %}
-</div>
-
-<div v-if="reportes.suscripciones != '' ">
-    {% include "views/reportes/suscripciones.html" %}
-</div>
-
-<div v-if="reportes.compras != '' ">
-    {% include "views/reportes/compras.html" %}
-</div>
-
-<div v-if="reportes.ventas != '' ">
-    {% include "views/reportes/ventas.html" %}
+    <div class="row">
+        
+        <div class="col">
+            <div v-if="reportes.compras != '' ">
+                {% include "views/reportes/compras.html" %}
+            </div>
+            
+            <div v-if="tipo == 'F'">
+                {% include "views/reportes/factura.html" %}
+            </div>
+            
+            <div v-if="tipo == 'S' ">
+                {% include "views/reportes/suscripciones.html" %}
+            </div>
+            
+            <div v-if="reportes.compras != '' ">
+                {% include "views/reportes/compras.html" %}
+            </div>
+            
+            <div v-if="reportes.ventas != '' ">
+                {% include "views/reportes/ventas.html" %}
+            </div>
+        </div>
+    </div>
 </div>
 
 {%endblock%}
