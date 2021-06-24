@@ -4,17 +4,23 @@
 
 {%block head%}
 <script src="{{ url_for('static', filename = '/js/reportes.js') }}"></script>
+<script src="https://unpkg.com/bootstrap-vue@2.5.0/dist/bootstrap-vue.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"></script>
 {%endblock%}
 
 {%block body%}
 {% include "navbar.html" %}
-<div class="col d-flex flex-column align-items-center p-2">
+<div  class="col d-flex flex-column align-items-center p-2">
    <h4 class="my-2">Tipo de reporte</h4>
    <div class="my-2 d-flex flex-row">
+        <input type="hidden" id="id" value="{{id}}" />
        {% if session.tipo_usuario == 'C' %}
        <b-form-radio v-model="select" name="tipo" value="C" class="mx-2">Compras</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="F" class="mx-2">Facturas</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="S" class="mx-2">Suscripciones</b-form-radio>
+       <b-form-radio v-model="select" name="tipo" value="O" class="mx-2">Ofertas</b-form-radio>
        {%else%}
        <b-form-radio v-model="select" name="tipo" value="P" class="mx-2">Productos comprados</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="V" class="mx-2">Ventas</b-form-radio>
@@ -25,27 +31,43 @@
 <div class="container">
 
     <div class="row">
-        
-        <div class="col">
-            <div v-if="reportes.compras != '' ">
+        <div class="col text-align-center">
+            <div v-if="select == 'C' || select == 'O' || select == 'V' " id="inputFechas" class="d-flex flex-column align-items-center">
+                <label for="fechaInicial">Fecha de inicio</label>
+                <b-form-datepicker id="fechaInicial" v-model="fechaInicio" class="mb-2 w-50"></b-form-datepicker>
+                <label class="mt-2" for="fechaFinal">Fecha final</label>
+                <b-form-datepicker id="fechaFinal" v-model="fechaFin" class="mb-2 w-50"></b-form-datepicker>
+            </div>
+        {% if session.tipo_usuario == 'C' %}
+
+            <div v-if="tipo == 'C'">
+                <div class="d-flex flex-column align-items-center">
+                    <canvas id="myChart" width="400" height="400"></canvas>
+                </div>
                 {% include "views/reportes/compras.html" %}
             </div>
-            
             <div v-if="tipo == 'F'">
                 {% include "views/reportes/factura.html" %}
             </div>
-            
             <div v-if="tipo == 'S' ">
                 {% include "views/reportes/suscripciones.html" %}
             </div>
-            
-            <div v-if="reportes.compras != '' ">
-                {% include "views/reportes/compras.html" %}
+            <div v-if="select == 'O'" class="d-flex flex-column align-items-center mt-3">
+                
+                <label for="precio">Precio menor a</label>
+                <b-form-input id="precio" class="my-2 w-50" v-model="ofertas.precioMenor" type="number" placeholder="Ingresar el precio menor a"></b-form-input>
+                <label for="categoria">Categoria</label>
+                <b-form-select id="categoria" name="categoria" v-model="ofertas.categoria" :options="categorias" class="my-2 w-50" required></b-form-select>
+                
+                <div v-if="tipo == 'O' ">
+                    {% include "views/reportes/ofertas.html" %}
+                </div>
             </div>
-            
+            {%else%}
             <div v-if="reportes.ventas != '' ">
                 {% include "views/reportes/ventas.html" %}
             </div>
+            {%endif%}
         </div>
     </div>
 </div>

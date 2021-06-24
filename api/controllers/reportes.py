@@ -8,12 +8,43 @@ def reportes():
     try:
         cur = mysql.connect().cursor()
         if 'usuario' in session:
-            return render_template('views/reportes.html')
+            return render_template('views/reportes.html', id=session['id'])
         else:
             return redirect('/login')
     except Exception as e:
         print(e)
         return jsonify('Ha ocurrido un error')
+    finally:
+        cur.close()
+
+@app.route('/reporte_compras_api', methods=['POST'])
+def compras():
+    try:
+        cur = mysql.connect().cursor()
+
+        if not 'usuario' in session:
+            return jsonify('Debes registrarte')
+        else:
+            _json = request.get_json(force=True)
+            # _id = session['id']
+            _id = session['id']
+            _fecha1 = _json['fechaInicio']
+            _fecha2 = _json['fechaFin']
+
+            data = []
+            query = "SELECT p.id_prod, p.descripcion, SUM(t.cantidad), p.precio, SUM(c.total) FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod LEFT JOIN tbl_compras c ON c.id_comp = t.id_comp WHERE c.id_comprador = %s AND c.fecha BETWEEN %s AND %s GROUP BY p.id_prod"
+            values = (_id, _fecha1, _fecha2)
+            cur.execute(query, values)
+            rows = cur.fetchall()
+            for row in rows:
+                data.append({'id': row[0], 'descripcion': row[1],'precio':row[3],'cantidad': int(float(row[2])),'total': row[4]})
+
+            res = jsonify(data)
+            res.status_code = 200
+            return res
+
+    except Exception as e:
+        print(e)
     finally:
         cur.close()
 
@@ -94,6 +125,35 @@ def suscripciones():
         data.append(tiendas)
         return jsonify(data)
 
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()
+
+@app.route('/reporte_ofertas_api', methods=['POST'])
+def ofertas():
+    try:
+        cur = mysql.connect().cursor()
+        if not 'usuario' in session:
+            return jsonify('Debes iniciar sesion');
+        else:
+            _json = request.get_json(force=True)
+            _fecha1 = _json['fechaInicio']
+            _fecha2 = _json['fechaFin']
+            _precio= _json['precio']
+            _categoria = _json['categoria']
+
+            query = "SELECT p.id_prod, p.descripcion, c.descripcion, p.precio, DATE_FORMAT(p.publicacion, %s) FROM tbl_productos p LEFT JOIN tbl_categoriasproductos c ON p.id_categoria = c.id_catp WHERE  p.id_categoria = %s AND p.precio <= %s AND p.publicacion BETWEEN %s AND %s "
+            values =("%d %M %Y", _categoria, _precio, _fecha1, _fecha2)
+            cur.execute(query, values)
+
+            productos = []
+            rows = cur.fetchall()
+            if rows:
+                for row in rows:
+                    productos.append({'id':row[0],'descripcion': row[1], 'categoria':row[2],  'precio': row[3], 'publicacion':row[4]})
+
+            return jsonify(productos)
     except Exception as e:
         print(e)
     finally:

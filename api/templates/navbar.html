@@ -1,8 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/inicio">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <!-- <a class="navbar-brand" href="/inicio">Navbar</a> -->
+    <b-navbar variant="faded" type="light">
+      <!-- <b-navbar-brand href="/inicio"> -->
+        <img src="/static/logo/Mminimal.png" v-bind:width="45" v-bind:height="45" class="d-inline-block align-top" alt="Kitten">
+        <!-- Inicio -->
+      <!-- </b-navbar-brand> -->
+    </b-navbar>
+      <!-- <span class="navbar-toggler-icon"></span> -->
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto mb-2 mb-lg-1">
@@ -23,6 +28,9 @@
           <a class="nav-link" href="/carrito"><i class="fas fa-shopping-cart"></i> Carrito</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="/reportes" ><i class="fas fa-clipboard-list"></i> Reportes</a>
+      </li>
+        <li class="nav-item">
           <a class="nav-link" href="/perfil" aria-disabled="true"><i class="fas fa-user-circle"></i> Tu perfil</a>
         </li>
         {%elif session.tipo_usuario == 'T'%}
@@ -33,6 +41,9 @@
           <a class="nav-link" href="/redes_sociales" aria-disabled="true"><i class="fas fa-hashtag"></i> Redes Sociales</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="/reportes" ><i class="fas fa-clipboard-list"></i> Reportes</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/tienda"  aria-disabled="true"><i class="fas fa-store"></i> Tu tienda</a>
         </li>
         {%endif%}
@@ -41,9 +52,6 @@
           <a class="btn btn-primary" href="/login" ><i class="fas fa-user-check"></i> Iniciar sesion</a>
         </li>
         {%else%}
-        <li class="nav-item">
-            <a class="nav-link" href="/reportes" ><i class="fas fa-clipboard-list"></i> Reportes</a>
-        </li>
         <li class="nav-item">
           <form method="post" action="/logout">
             <button class="ml-5 btn btn-dark badge-pill" type="submit"><i class="fas fa-sign-out-alt"></i> Salir</button>

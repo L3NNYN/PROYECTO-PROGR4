@@ -1,0 +1,7 @@
+<div v-if="reportes.compras != '' " v-for="compra in reportes.compras" class="m-5">
+    <b-table hover :items="reportes.compras" :fields="fields.compras">
+    </b-table>
+    <h5>&nbsp;&nbsp;Total: [[reportes.compras.length]] &nbsp;&nbsp;</h5>
+</div>
+<h2 v-else>No hay compras en las fechas seleccionadas</h2>
+

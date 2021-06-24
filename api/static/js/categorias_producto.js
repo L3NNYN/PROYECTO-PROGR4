@@ -3,7 +3,7 @@ function apiURL(service) { //Función para formar la ruta completa a la API
     return BaseApiUrl + service;
 }
 window.onload = function () {
-    var vm = new Vue({
+    var qw = new Vue({
         el: '#app',
         data: {
             form:{
