@@ -23,7 +23,7 @@ def tienda(id=None):
             if session['id'] == id or id == None: profile = 'T' #si esta accediendo desde la navbar o desde el inicio
             
             if profile is 'T':
-                data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'id': session['id'], 'calificacion': float(row[4])})
+                data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'id': session['id']})
             else:
                 data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'id': id})
 

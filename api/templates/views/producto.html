@@ -23,7 +23,7 @@
             </b-carousel>
             {%if items%}
                 <h2>{{ items[0].descripcion }}</h2>
-                <h3>Precio: {{items[0].precio}}</h3>
+                <h3>Precio: $ <strong>{{items[0].precio}}</strong></h3>
                 <h6>Restante: {{items[0].stock}}</h6>
                 <small>{{items[0].publicacion}}</small>
                 <a href="/tienda/{{items[0].tienda_id}}">Ver más de {{items[0].tienda}}</a>

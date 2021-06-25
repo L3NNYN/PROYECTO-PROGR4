@@ -11,40 +11,40 @@ window.onload = function () {
                 nombre:'',
                 password:''
             },
-            // registro
-            formSignup: {
-                nombre: '',
-                nombre:'',
-                password:'',
-                cedula:'',
-                usuario: '',
-                pais: '',
-                direccion: '',
-                email:'',
-                tipo: ''
-            },
-            paises: [
-                {value:1, text:'Nana1,'},
-                {value:2, text:'Nana'}
-            ],
-            // tienda
-            imgProps: {
-                blank: true, blankColor: '#777', width: 150, height: 150, class: 'mt-2',
-            },
-            tienda: {
-                puntaje: '12',
-                value:'4',
-                search:''
-            },
-            fields:['Nombre', 'Numero', 'CVV', 'F.Vencimiento', 'Saldo'],
-            metodos_pago:{
-                id: '',
-                propietario: '',
-                numero: '',
-                cvv:'',
-                fecha:'',
-                saldo: ''
-            }
+            // // registro
+            // formSignup: {
+            //     nombre: '',
+            //     nombre:'',
+            //     password:'',
+            //     cedula:'',
+            //     usuario: '',
+            //     pais: '',
+            //     direccion: '',
+            //     email:'',
+            //     tipo: ''
+            // },
+            // paises: [
+            //     {value:1, text:'Nana1,'},
+            //     {value:2, text:'Nana'}
+            // ],
+            // // tienda
+            // imgProps: {
+            //     blank: true, blankColor: '#777', width: 150, height: 150, class: 'mt-2',
+            // },
+            // tienda: {
+            //     puntaje: '12',
+            //     value:'4',
+            //     search:''
+            // },
+            // fields:['Nombre', 'Numero', 'CVV', 'F.Vencimiento', 'Saldo'],
+            // metodos_pago:{
+            //     id: '',
+            //     propietario: '',
+            //     numero: '',
+            //     cvv:'',
+            //     fecha:'',
+            //     saldo: ''
+            // }
             
         },
         mounted() {

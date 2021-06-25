@@ -2,16 +2,25 @@
 
 {%block title%}Perfil{%endblock%}
 
+{%block head%}
+<script src="{{ url_for('static', filename = '/js/app.js') }}"></script>
+{%endblock%}
+
 {%block body%}
 {% include "navbar.html" %}
-<div class="container">
-    <div class="row">
-        <div class="col"></div>
-        <div class="col-6">
-            {{data.nombre}}
-        </div>
-        <div class="col"></div>
+<div class="d-flex flex-column text-center">
+
+    <div>
+        <img src="/static/pics/{{data.foto}}" style="width: 12rem; height: 12rem;" class="my-5"></img>
+        <h4>{{data.nombre}}</h4>
+        <h5>Email: {{data.email}}</h5>
+        <h5>Direccion: {{data.direccion}}</h5>
+        <h5>Pais: {{data.pais}}</h5>
+        {%if data.id == session.id%}
+            <b-button href="/editar_usuario" variant="primary badge-pill mt-4"><i class="fas fa-user-edit"></i> Editar informacion</b-button>
+        {%endif%}
     </div>
+    
 </div>
 
 {%endblock%}

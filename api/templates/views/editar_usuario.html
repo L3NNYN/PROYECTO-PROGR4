@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{%block title%}Perfil{%endblock%}
+
+{%block head%}
+<script src="{{ url_for('static', filename = '/js/signup.js') }}"></script>
+{%endblock%}
+
+{%block body%}
+{% include "navbar.html" %}
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            <div class="d-flex flex-column text-center">
+                <div>
+                    <b-card header-tag="header">
+                        <template #header>
+                            {%if session.tipo_usuario == 'C' %}
+                            <h3>Editar usuario</h3>
+                            {%else%}
+                            <h3>Editar tienda</h3>
+                            {%endif%}
+                            
+                        </template>
+                        <b-form method="POST" action="/editar_usuario" enctype="multipart/form-data">
+                            <label for="nombre">Nombre real</label>
+                            <b-form-input size="md" id="nombre" name="nombre" maxlength="20" value="{{item.nombre}}" type="text" required placeholder="Ingresa tu nombre" class="my-2"></b-form-input>
+                            <label for="cedula">Cedula</label>
+                            <b-form-input size="md" id="cedula" name="cedula" maxlength="30" value="{{item.cedula}}" type="text" required placeholder="Ingresa tu cedula" class="my-2"></b-form-input>
+                            <!-- <label for="telefono">Telefono</label>
+                                <b-form-input size="md" id="telefono" name="telefono" maxlength="15" value="{{item.telefono}}" type="text" required placeholder="Ingresa tu telefono" class="my-2"></b-form-input> -->
+                                <label for="email">Email</label>
+                                <b-form-input size="md" id="email" name="email" maxlength="50" value="{{item.email}}" type="email" required placeholder="Ingresa tu email" class="my-2"></b-form-input>
+                                <label for="direccion">Direccion</label>
+                                <b-form-input size="md" id="direccion" name="direccion" maxlength="150" value="{{item.direccion}}" type="text" required placeholder="Ingresa tu direccion" class="my-2"></b-form-input>
+                                <label for="pais">Pais</label>
+                                <b-form-select id="pais" name="pais" value="{{item.pais}}" :options="paises" class="my-2" required></b-form-select>
+                                <label for="foto">Foto</label>
+                                <b-form-file size="md" id="foto" name="foto" value="{{item.foto}}" placeholder="Elige tu foto" class="my-2"></b-form-file>
+                                
+                                {%if session.tipo_usuario == 'C' %}
+                                <b-button href="/perfil" size="md" variant="secondary badge-pill" class="my-2">Cancelar</b-button>
+                                {%else%}
+                                <b-button href="/tienda" size="md" variant="secondary badge-pill" class="my-2">Cancelar</b-button>
+                                {%endif%}
+                                <b-button size="md" variant="primary badge-pill" name="submit" type="submit" class="my-2">Actualizar</b-button>
+                            </b-form>
+                        </b-card>
+                    </div>
+                </div>
+            </div>
+        <div class="col"></div>
+    </div>
+</div>
+        
+{%endblock%}

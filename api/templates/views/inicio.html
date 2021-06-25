@@ -76,7 +76,7 @@
             <div class="m-5 p-2">
                 <h3>Tiendas <i class="fas fa-store"></i></h3>
                 <div v-if="tiendas != '' " class="d-flex flex-row">
-                    <b-card v-for="item in tiendas" border-variant="info" img-top tag="article" class=" m-2">
+                    <b-card v-for="item in tiendas" border-variant="dark" img-top tag="article" class=" m-2">
                         <b-card-text class="">
                             <div class="text-center">
                                 <b-img v-bind:width="75" v-bind:height="75" size="5rem" :src="'/static/pics/' + item.foto" rounded="circle"></b-img>
