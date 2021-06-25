@@ -36,3 +36,4 @@ import controllers.inicio
 import controllers.redes_sociales
 import controllers.tienda
 import controllers.reportes
+import controllers.calificacion

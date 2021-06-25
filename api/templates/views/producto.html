@@ -26,17 +26,18 @@
                 <h3>Precio: {{items[0].precio}}</h3>
                 <h6>Restante: {{items[0].stock}}</h6>
                 <small>{{items[0].publicacion}}</small>
+                <a href="/tienda/{{items[0].tienda_id}}">Ver más de {{items[0].tienda}}</a>
+                <b-form-rating id="puntaje" variant="warning" no-border readonly v-model="puntaje" size="md"></b-form-rating>
                 <input type="hidden" id="id_producto" value="{{items[0].id}}" />
                 <input type="hidden" id="tienda_id" value="{{items[0].tienda}}" />
             {%endif%}
 
-            {% if session.tipo_usuario == 'C' %}
-
+            
+            
+            {%if session.tipo_usuario == 'C'%}
+            <b-button variant="warning text-white badge-pill m-2" v-b-modal.modal><i class="far fa-star"></i> Calificar</b-button>
             <b-button v-if="lista_deseos == 'T'" @click="actualizarListaDeseos()" variant="outline-dark badge-pill m-2"><i class="far fa-heart"></i> Eliminar de lista de deseos</b-button>
             <b-button v-else @click="actualizarListaDeseos()" variant="primary badge-pill m-2"><i class="fas fa-heart"></i> Agregar a lista de deseos </b-button>
-
-            {%endif%}
-            {%if session.tipo_usuario == 'C'%}
             <b-button @click="agregarCarrito" variant="primary badge-pill m-2"><i class="fas fa-plus"></i> Agregar al carrito</b-button>
             {%endif%}
             <b-card header-tag="header" footer-tag="footer" class="mb-5">
@@ -73,5 +74,21 @@
     <div class="col"></div>
 </div>
 </div>
+<b-modal id="modal" ref="modal" @ok="saveCalificacion"> 
+    <template slot="modal-header">
+    <h3>Calificar producto</h3>
+    </template>
+    <b-form @submit="saveCalificacion">
+        <b-form-group id="input-title" label="Deja tu calificacion" label-for="calificar">
+            <b-form-rating id="calificar" variant="warning" no-border v-model="calificacion.nueva" size="lg"></b-form-rating>
+        </b-form-group>
+        <small v-if="calificacion.dada != 0">La calificacion dada anteriormente es de: [[calificacion.dada]]</small>
+    </b-form> 
+    <template slot="modal-footer" slot-scope="{ ok, cancel }">
+        <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+        <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+    </template>
+</b-modal>
+
 
 {%endblock%}

@@ -12,13 +12,15 @@ window.onload = function () {
             }, 
             tienda: {
                 id:'',
-                puntaje: '12',
-                value: 2.5,
+                puntaje: 0,
                 search:''
             },
             seguir: '',
-            masVendidos:[],
-            productos:[]
+            productos:[],
+            calificacion:{
+                dada:0,
+                nueva:0,
+            }
         },
         mounted() {
             this.tienda.id = document.getElementById("id").value;
@@ -27,18 +29,39 @@ window.onload = function () {
             getData(){
                 this.getProductos();
                 this.getSeguimiento();
+                this.getCalificacion();
             },
             getProductos(){
-                axios.get(apiURL('tienda_api')).then((response) => {
-                    this.productos = response.data[0];
-                    this.masVendidos = response.data.masVendidos;
+                axios.get(apiURL('tienda_api/'+this.tienda.id)).then((response) => {
+                    this.productos = response.data;
+                    // this.masVendidos = response.data.masVendidos;
                     // console.log(response.data);
-                }).catch(error => { alertify.error(error); });
+                }).catch(error => {
+                    console.log(error); alertify.error(error); });
             },
             search(){
-                axios.get(apiURL('tienda_api'), JSON.stringify({'search': this.search})).then((response) => {
+                axios.get(apiURL('tienda_api/'+this.tienda.id), JSON.stringify({'search': this.search})).then((response) => {
                     this.productos = response.data.productos;
                 }).catch(error => { alertify.error(error); });
+            },
+            getCalificacion(){
+                axios.get(apiURL('calificacion_tienda_api/'+this.tienda.id),).then((response) => {
+                    var data = response.data;
+                    this.calificacion.dada = data[0].dada;
+                    this.tienda.puntaje = data[1].tienda;
+                }).catch(error => { alertify.error(error); });
+            },
+            saveCalificacion(){
+                if(this.calificacion.dada == 0){
+                    axios.post(apiURL('calificacion_tienda_api/'+this.tienda.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
+                        alertify.success(response.data);
+                    }).catch(error => { alertify.error(error); });
+                } else {
+                    axios.put(apiURL('calificacion_tienda_api/'+this.tienda.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
+                        alertify.success(response.data);
+                    }).catch(error => { alertify.error(error); });
+                }
+                this.getData();
             },
             puntajetienda(){
 

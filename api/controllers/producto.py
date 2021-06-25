@@ -11,7 +11,6 @@ def productos():
     try:
         cur = mysql.connect().cursor()
         if 'usuario' in session:
-            print(session['usuario'])
             cur.execute("SELECT p.id_prod, p.descripcion, p.stock, DATE_FORMAT(p.publicacion, %s), p.precio, p.tiempoenvio, p.costoenvio, c.descripcion FROM tbl_productos p RIGHT JOIN tbl_categoriasproductos c ON c.id_catp = p.id_categoria WHERE p.usr_id = %s", (("%d %M %Y"),session['id'],))
 
             rows = cur.fetchall()
@@ -40,12 +39,12 @@ def producto(id=None):
         if id == None:
             return redirect('/inicio')
         else:
-            cur.execute("SELECT p.id_prod, p.usr_id, p.descripcion, p.stock, p.publicacion, p.precio, p.tiempoenvio, p.costoenvio, c.descripcion FROM tbl_productos p RIGHT JOIN tbl_categoriasproductos c ON c.id_catp = p.id_categoria WHERE p.id_prod =%s", (id,))
+            cur.execute("SELECT p.id_prod, p.usr_id, p.descripcion, p.stock, p.publicacion, p.precio, p.tiempoenvio, p.costoenvio, c.descripcion, u.nombre FROM tbl_productos p LEFT JOIN tbl_categoriasproductos c ON c.id_catp = p.id_categoria LEFT JOIN tbl_usuarios u ON u.id_usr = p.usr_id WHERE p.id_prod =%s", (id,))
             result = cur.fetchone()
             items = []
 
             # Informacion del producto y sus fotos
-            items.append({'id': result[0], 'tienda': result[1],'descripcion': result[2], 'stock': result[3], 'publicacion': result[4], 'precio':result[5], 'tiempoEnvio': result[6], 'costoEnvio': result[7], 'categoria': result[8]})
+            items.append({'id': result[0], 'tienda_id': result[1],'descripcion': result[2], 'stock': result[3], 'publicacion': result[4], 'precio':result[5], 'tiempoEnvio': result[6], 'costoEnvio': result[7], 'categoria': result[8], 'tienda': result[9]})
             cur.execute("SELECT path FROM tbl_fotos WHERE id_producto = %s", (id,))
             rows = cur.fetchall()
             fotos = []
@@ -180,4 +179,3 @@ def categorias():
         print(e)
     finally:
         cur.close()
-

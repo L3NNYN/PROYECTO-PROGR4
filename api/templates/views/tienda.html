@@ -13,32 +13,26 @@
 <div class="container">
     <div class="row">
         {%if item%}
-        <div class="col-4 d-flex flex-column align-items-center p-2">
+        <div class="col-4 d-flex flex-column text-center p-2">
             <div>
                 <img src="/static/pics/{{item[0].foto}}" class="rounded" style="width: 12rem; height: 12rem;" alt="Circle image"></img>
                 <input type="hidden" id="id" value="{{item[0].id}}" />
                 <h3>{{item[0].nombre}}</h3>
                 <h4>{{item[0].email}}</h4>
                 <h4> {{item[0].direccion}} </h4>
-                <img src="{{ url_for('static', filename = 'resources/estrella.png') }}" style="width: 32px; height: 32px;" alt="">
-                <p>(12)</p>
+                <b-form-rating id="puntaje" variant="warning" no-border readonly v-model="tienda.puntaje" size="md"></b-form-rating>
                 {%if session.usuario != '' and session.tipo_usuario == 'C' %}
-                <b-button v-if="seguir == 'T'" @click="actualizarSeguimiento('F')" variant="outline-dark badge-pill m-2"><i class="far fa-heart"></i> Dejar de seguir</b-button>
-                <b-button v-else @click="actualizarSeguimiento('T')" variant="primary badge-pill m-2"><i class="fas fa-heart"></i> Seguir</b-button>
+                <div class="d-flex flex-column mt-2">
+                    <b-button v-if="seguir == 'T'" @click="actualizarSeguimiento('F')" variant="outline-dark badge-pill"><i class="far fa-heart"></i> Dejar de seguir</b-button>
+                    <b-button v-else @click="actualizarSeguimiento('T')" variant="primary badge-pill"><i class="fas fa-heart"></i> Seguir</b-button>
+                    <b-button variant="warning text-white badge-pill my-2" v-b-modal.modal><i class="far fa-star"></i> Calificar</b-button>
+                </div>
                 {%endif%}
                 <br>
-                <label for="rating-sm-no-border">Calificacion:</label>
-                <b-form-rating id="rating-sm-no-border" variant="warning" no-border v-model="tienda.value" size="lg"></b-form-rating>
             </div>
         </div>
         {%endif%}
         <div class="col-8">
-            <div id="masVendidos" class="m-5 p-2">
-                <h3>Más vendidos</h3>
-                <div v-if="masVendidos != ''" class="d-flex flex-row">
-                </div>
-                <h6 v-else class="m-1">No hay productos vendidos aun</h6>
-            </div>
             <div id="todos" class="m-5 p-2">
                 <h3>Todos</h3>
                 <div class="d-flex flex-row my-3">
@@ -59,7 +53,9 @@
                         <b-card-footer class="d-flex flex-column align-items-center">
                             <div v-if="tienda.id == producto.tienda_id" class="div">
                                 <b-button :href="'/producto/'+ producto.id" variant="outline-info mx-2">Ver</b-button>
-                                <b-button @click="agregarCarrito(producto.id, producto.tienda_id)" variant="primary">Agregar al carrito</b-button>        
+                                {%if session.tipo_usuario == 'C'%}
+                                <b-button @click="agregarCarrito(producto.id, producto.tienda_id)" variant="primary">Agregar al carrito</b-button>
+                                {%endif%}    
                             </div>
                             <a v-else class="btn btn-primary" href="/edit_producto/{{item.id}}"><i class="fas fa-pen"></i> Editar</a>
                         </b-card-footer>
@@ -67,7 +63,7 @@
                 </div>
                 <h6 v-else class="m-1">No hay productos</h6>
             </div>
-            {%if profile != '' and profile == 'T' %}
+            <!-- {%if profile != '' and profile == 'T' %}
                 <div id="reportes" class="m-5 p-2">
                     <h3>Reportes</h3>
                     <div class="d-flex flex-column">
@@ -76,9 +72,24 @@
                         </div>
                     </div>
                 </div>
-            {%endif%}
+            {%endif%} -->
         </div>
     </div>
 </div>
+<b-modal id="modal" ref="modal" @ok="saveCalificacion"> 
+    <template slot="modal-header">
+    <h3>Calificar tienda</h3>
+    </template>
+    <b-form @submit="saveCalificacion">
+        <b-form-group id="input-title" label="Deja tu calificacion" label-for="calificar">
+            <b-form-rating id="calificar" variant="warning" no-border v-model="calificacion.nueva" size="lg"></b-form-rating>
+        </b-form-group>
+        <small v-if="calificacion.dada != 0">La calificacion dada anteriormente es de: [[calificacion.dada]]</small>
+    </b-form> 
+    <template slot="modal-footer" slot-scope="{ ok, cancel }">
+        <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+        <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+    </template>
+</b-modal>
         
 {% endblock %}

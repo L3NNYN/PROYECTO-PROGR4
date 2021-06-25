@@ -159,7 +159,8 @@ CREATE TABLE tbl_CategoriasProductos
 CREATE TABLE CalificacionProducto
 (
   id_producto Int(11) UNSIGNED NOT NULL,
-  usr_id Int(11) UNSIGNED NOT NULL
+  usr_id Int(11) UNSIGNED NOT NULL,
+  calificacion Int NOT NULL
 )
 ;
 
@@ -229,7 +230,8 @@ ALTER TABLE Productos ADD PRIMARY KEY (id_comp,id_prod)
 CREATE TABLE CalificacionTienda
 (
   id_comprador Int(11) UNSIGNED NOT NULL,
-  id_tienda Int(11) UNSIGNED NOT NULL
+  id_tienda Int(11) UNSIGNED NOT NULL,
+  calificacion Int NOT NULL
 )
 ;
 
@@ -386,3 +388,5 @@ ALTER TABLE Notificaciones ADD CONSTRAINT Relationship48 FOREIGN KEY (id_prod) R
 
 ALTER TABLE Notificaciones ADD CONSTRAINT Relationship49 FOREIGN KEY (id_usr) REFERENCES tbl_Usuarios (id_usr) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
+
+

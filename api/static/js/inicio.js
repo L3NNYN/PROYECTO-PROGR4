@@ -23,7 +23,7 @@ window.onload = function () {
             getData(){
                 this.getTiendas(this.filtro);
                 this.getProductos(this.filtro);
-                // this.getMasVendidos();
+                this.getMasVendidos(this.filtro);
             },
             getTiendas(filter){
                 var url;
@@ -33,7 +33,6 @@ window.onload = function () {
                     url = apiURL('todo_tiendas_api');
                 }
                 axios.get(url).then((response) => {
-                    console.log(response.data);
                     this.tiendas = response.data;
                 }).catch(error => { alertify.error(error); });
             },
@@ -48,8 +47,14 @@ window.onload = function () {
                     this.productos = response.data;
                 }).catch(error => { alertify.error(error); });
             },
-            getMasVendidos(){
-                axios.get(apiURL('mas_vendidos_api'))
+            getMasVendidos(filter){
+                var url;
+                if(filter){
+                    url = apiURL('mas_vendidos_api/'+ filter);
+                } else {
+                    url = apiURL('mas_vendidos_api');
+                }
+                axios.get(url)
                 .then((response) => {
                     this.masVendidos = response.data;
                 }).catch(error => { alertify.error(error); });
@@ -57,6 +62,7 @@ window.onload = function () {
             filtrar(){
                this.getProductos(this.filtro);
                this.getTiendas(this.filtro);
+               this.getMasVendidos(this.filtro);
             },
             agregarCarrito(id, tienda_id){
                 axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':id, 'tienda_id': tienda_id}))

@@ -14,14 +14,23 @@ window.onload = function () {
                 descripcion:'',
             },
             'lista_deseos':'',
+            calificacion:{
+                dada:0,
+                nueva:0,
+            },
+            'puntaje':0,
             'lala':'',
         },
         mounted() {
             this.id = document.getElementById('id_producto').value;
             this.tienda_id = document.getElementById('tienda_id').value;
-            this.getComentarios(); // Carga los datos desde el inicio (se creará más adelante) 
-            this.getListaDeseo(); //Revisa si existe en la lista de deseos
+            this.getData();
         }, methods: { //Aquí van las funciones VUE 
+            getData(){
+                this.getComentarios(); // Carga los datos desde el inicio (se creará más adelante) 
+                this.getListaDeseo(); //Revisa si existe en la lista de deseos
+                this.getCalificacion();
+            },
             getListaDeseo(){
                 axios.get(apiURL('lista_deseos_api/' + this.id))
                 .then((response) => {
@@ -47,6 +56,25 @@ window.onload = function () {
                 .then((response) => {
                     this.comentarios = response.data;
                 }).catch(error => { alertify.error(error); });
+            },
+            getCalificacion(){
+                axios.get(apiURL('calificacion_producto_api/'+this.id),).then((response) => {
+                    var data = response.data;
+                    this.calificacion.dada = data[0].dada;
+                    this.puntaje = data[1].producto;
+                }).catch(error => { alertify.error(error); });
+            },
+            saveCalificacion(){
+                if(this.calificacion.dada == 0){
+                    axios.post(apiURL('calificacion_producto_api/'+this.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
+                        alertify.success(response.data);
+                    }).catch(error => { alertify.error(error); });
+                } else {
+                    axios.put(apiURL('calificacion_producto_api/'+this.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
+                        alertify.success(response.data);
+                    }).catch(error => { alertify.error(error); });
+                }
+                this.getData();
             },
             postComentario(){
                 if(this.form.descripcion != ''){
