@@ -2,6 +2,8 @@ var BaseApiUrl = "http://localhost:5000/"; //ruta base a la API
 function apiURL(service) { //Función para formar la ruta completa a la API 
     return BaseApiUrl + service;
 }
+
+//datos del produto
 window.onload = function () {
     var vm = new Vue({
         el: '#app',
@@ -25,18 +27,20 @@ window.onload = function () {
             this.id = document.getElementById('id_producto').value;
             this.tienda_id = document.getElementById('tienda_id').value;
             this.getData();
-        }, methods: { //Aquí van las funciones VUE 
+        }, methods: { 
             getData(){
-                this.getComentarios(); // Carga los datos desde el inicio (se creará más adelante) 
+                this.getComentarios(); //Comentarios del producto
                 this.getListaDeseo(); //Revisa si existe en la lista de deseos
                 this.getCalificacion();
             },
+            //Obtiene estado de la lista de deseo
             getListaDeseo(){
                 axios.get(apiURL('lista_deseos_api/' + this.id))
                 .then((response) => {
                     this.lista_deseos = response.data;
                 }).catch(error => {console.log(error); alertify.error(error); });
             },
+            //Actualiza lista de deseo
             actualizarListaDeseos(){
                 agregar = '';
                 if(this.lista_deseos == 'T'){
@@ -51,12 +55,14 @@ window.onload = function () {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });
             },
+            //Obtiene comentarios
             getComentarios(){
                 axios.get(apiURL('comentarios_api/' + this.id))
                 .then((response) => {
                     this.comentarios = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Calificaion del prodcuto
             getCalificacion(){
                 axios.get(apiURL('calificacion_producto_api/'+this.id),).then((response) => {
                     var data = response.data;
@@ -64,18 +70,20 @@ window.onload = function () {
                     this.puntaje = data[1].producto;
                 }).catch(error => { alertify.error(error); });
             },
-            saveCalificacion(){
+            //Gaurda calificacion del producto
+            async saveCalificacion(){
                 if(this.calificacion.dada == 0){
-                    axios.post(apiURL('calificacion_producto_api/'+this.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
+                    await axios.post(apiURL('calificacion_producto_api/'+this.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
                         alertify.success(response.data);
                     }).catch(error => { alertify.error(error); });
                 } else {
-                    axios.put(apiURL('calificacion_producto_api/'+this.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
+                   await axios.put(apiURL('calificacion_producto_api/'+this.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
                         alertify.success(response.data);
                     }).catch(error => { alertify.error(error); });
                 }
                 this.getData();
             },
+            //Guarda un comentario
             postComentario(){
                 if(this.form.descripcion != ''){
                     axios.post(apiURL('comentarios_api/' + this.id), JSON.stringify(this.form))
@@ -86,6 +94,7 @@ window.onload = function () {
                     }).catch(error => { alertify.error(error); });
                 }
             },
+            //Agrega al carrito el producto
             agregarCarrito(){
                 axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':this.id, 'tienda_id': this.tienda_id}))
                 .then((response) => {

@@ -61,6 +61,7 @@ window.onload = function () {
                     }) 
                 }).catch(error => { alertify.error(error); });
             },
+            //Copmpleta el pago actualizando el carrito
             completarPago(){
                 axios.post(apiURL('carrito_api'), JSON.stringify(this.form))
                 .then((response) => {
@@ -70,6 +71,7 @@ window.onload = function () {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });
             },
+            //Valida el monto y su saldo
             validarMetodoPago(){
                 axios.post(apiURL('validar_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto':this.form.monto }))
                 .then((response) => {
@@ -80,12 +82,14 @@ window.onload = function () {
                     }
                 }).catch(error => { alertify.error(error); });
             },
+            //REbaja el monto de pago
             actualizarMetodoPago(){
                 axios.put(apiURL('update_monto_api'), JSON.stringify({'metodo_pago':this.form.metodo_pago, 'monto': this.form.monto}))
                 .then((response) => {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });
             },
+            //Valida que el CVV sea correcto
             validar(){
                 if(this.cvv != '' && this.metodo_pago != ''){
                     axios.post(apiURL('validar_cvv_api'), JSON.stringify({'cvv': this.cvv, 'metodo_pago': this.form.metodo_pago}))
@@ -104,6 +108,7 @@ window.onload = function () {
             reset(){
                 this.cvv = '';
             },
+            //Elimina productos del carrito
             removerCarrito(id, tienda_id){
                 axios.post(apiURL('remover_carrito_api'), JSON.stringify({'id': id, 'tienda_id': tienda_id})).then((response) => {
                     this.getProductos();

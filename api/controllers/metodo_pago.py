@@ -3,15 +3,20 @@ from init import mysql
 from init import app
 import bcrypt
 
+#Metodos de pago vista
 @app.route('/metodos_pago', methods=['GET'])
 def metod():
     try:
+        if not 'usuario' in session:
+            return redirect('/login')
+
         if request.method == 'GET':
             return render_template('views/metodos_pago.html')
-            # return render_template('views/metodos_pago.html')
     except Exception as e:
         print(e)
+        return redirect('/login')
 
+#Valida que el CVV ingresado sea el correcto AXIOS
 @app.route('/validar_cvv_api', methods=['POST'])
 def cvv():
     try:
@@ -38,7 +43,7 @@ def cvv():
     finally:
         cur.close()
 
-#Verifica que el metodo de pago tenga el monto suficiente
+#Verifica que el metodo de pago tenga el monto suficiente AXIOS
 @app.route('/validar_monto_api', methods=['POST'])
 def validarPago():
     try:
@@ -62,6 +67,7 @@ def validarPago():
     finally:
         cur.close()
 
+#Se actualiza el monto de un metodo de pago AXIOS
 @app.route('/update_monto_api', methods=['PUT'])
 def updateMonto():
     try:
@@ -85,17 +91,18 @@ def updateMonto():
         cur.close()
 
 #Se accede desde Axios
-@app.route('/metodos_pago_api', methods=['GET', 'POST'])
-def data():
+@app.route('/metodos_pago_api', methods=['GET', 'POST', 'PUT'])
+@app.route('/metodos_pago_api/<int:id>', methods=['DELETE'])
+def data(id=None):
     try:
-        cur = mysql.connect().cursor()
+        conn = mysql.connect()
+        cur = conn.cursor()
 
-        if request.method == 'GET':
+        if request.method == 'GET': #GET AXIOS
             cur.execute("SELECT id_pago, nombrePropietario, numero, cvv, fechaVencimiento, saldo FROM tbl_metodosdepago WHERE usr_id=%s", (session['id'],))
             rows = cur.fetchall()
             json_items = []
             content = {}
-            # json_items.append({'id':'eho', 'propietario': 'asd', 'numero': "result[2]",  'cvv': 'result[3]', 'fecha': 'result[4]', 'saldo': 'result[5]'})
             for result in rows:
                 content = {'id': result[0], 'propietario': result[1], 'numero': result[2],  'cvv': result[3], 'fecha': result[4], 'saldo': result[5]}
                 json_items.append(content)
@@ -113,15 +120,40 @@ def data():
             _saldo = _json['saldo']
             data = (_nombre, _numero, _cvv, _fecha, _saldo, session['id'],)
 
-            conn = mysql.connect()
-            cur = conn.cursor()
             cur.execute(query, data)
             conn.commit()
 
             res = jsonify('Metodo de pago ingresado correctamente')
             res.status_code = 200
             return res
+        
+        elif request.method == 'PUT': #PUT AXIOS
+            query = ("UPDATE tbl_metodosDePago SET nombrePropietario = %s,  numero = %s, cvv = %s, fechaVencimiento = %s, saldo = %s WHERE id_pago = %s")
+
+            _json = request.get_json(force=True) 
+            _nombre = _json['propietario']
+            _numero = _json['numero']
+            _cvv = bcrypt.hashpw(_json['cvv'].encode('utf8'), bcrypt.gensalt(10))
+            _fecha = _json['fecha']
+            _saldo = _json['saldo']
+            _id = _json['id']
+            data = (_nombre, _numero, _cvv, _fecha, _saldo, _id,)
+
+            cur.execute(query, data)
+            conn.commit()
+
+            res = jsonify('Metodo de pago actualizado')
+            res.status_code = 200
+            return res
+        
+        elif request.method == 'DELETE': #DELETE AXIOS
+            cur.execute("DELETE FROM tbl_metodosdepago WHERE id_pago = %s", (id,))
+            conn.commit()
+
+            return jsonify('Metodo de pago borrado')
+
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()

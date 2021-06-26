@@ -1,7 +1,11 @@
 
 <div v-if="reportes.facturas != '' " v-for="factura in reportes.facturas" class="m-5">
     <b-list-group>
-        <b-list-group-item>Tienda: <strong>[[factura.tienda]]</strong></b-list-group-item>
+      {%if session.tipo_usuario == 'T' %}
+      <b-list-group-item>Comprador: <strong>[[factura.comprador]]</strong></b-list-group-item>
+      {%else%}
+      <b-list-group-item>Tienda: <strong>[[factura.tienda]]</strong></b-list-group-item>
+      {%endif%}
         <b-list-group-item>Fecha: [[factura.fecha]] </b-list-group-item>
         <b-list-group-item>Metodo de pago: [[factura.metodopago.propietario]],  [[factura.metodopago.numero]]</b-list-group-item>
         <b-list-group-item>Direccion de envio: [[factura.direccionenvio.casillero]], [[factura.direccionenvio.provincia]]</b-list-group-item>

@@ -2,6 +2,7 @@ from flask import jsonify, request, render_template, redirect, session
 from init import mysql
 from init import app
 
+#Cargar vista de carrito
 @app.route('/carrito')
 def carrito():
     try:
@@ -12,6 +13,7 @@ def carrito():
     except Exception as e:
         print(e)
 
+#Se obtiene los productos del carrito, y se pueden pagar AXIOS
 @app.route('/carrito_api', methods=['GET', 'POST'])
 def carrito_api():
     try:
@@ -78,8 +80,8 @@ def canasta():
         _json = request.get_json(force=True)
         _id = _json['id']
         _tienda = _json['tienda_id']
-        session['carrito'].append({'id':_id, 'tienda_id': _tienda})
-
+        session['carrito'].append({'id':int(_id), 'tienda_id': int(_tienda)})
+       
         res = jsonify('Producto agregado al carrito correctamente.')
         res.status_code = 200
         return res 
@@ -94,8 +96,8 @@ def canasta2():
     try:
         _json = request.get_json(force=True)
         _id = _json['id']
-        _tiendaid = _json['tienda_id']
-        session['carrito'].remove({'id':_id, 'tienda_id': _tiendaid})
+        _tienda = _json['tienda_id']
+        session['carrito'].remove({'id':_id, 'tienda_id': _tienda})
         res = jsonify('Producto removido.')
         res.status_code = 200
         return res 

@@ -2,11 +2,13 @@ from flask import jsonify, request, render_template, redirect, session
 from init import mysql
 from init import app
 
+#Todos los productos de las tiendas AXIOS
 @app.route('/todo_productos_api')
 @app.route('/todo_productos_api/<string:filter>')
 def todoProductos(filter=None):
     try:
         cur = mysql.connect().cursor()
+
         if filter == None:
             cur.execute("SELECT t.id_prod, t.descripcion, t.stock, DATE_FORMAT(t.publicacion, '%d %M %Y'), t.precio, c.descripcion, t.usr_id FROM tbl_productos t LEFT JOIN tbl_categoriasproductos c ON c.id_catp = t.id_categoria")
         else:
@@ -25,7 +27,7 @@ def todoProductos(filter=None):
     finally:
         cur.close()
 
-
+#Todas las tiendas AXIOS
 @app.route('/todo_tiendas_api')
 @app.route('/todo_tiendas_api/<string:filter>')
 def todoTiendas(filter = None):
@@ -48,6 +50,7 @@ def todoTiendas(filter = None):
     finally:
         cur.close()
 
+#Productos mas vendidos AXIOS, tiene un limite de solo 5 productos
 @app.route('/mas_vendidos_api')
 @app.route('/mas_vendidos_api/<string:filter>')
 def masVendidos(filter = None):

@@ -7,6 +7,7 @@ from init import app
 
 pathFotos = './static/img_productos'
 
+#Se obtienen los productos de la tienda
 @app.route('/productos', methods=['GET'])
 def productos():
     try:
@@ -26,9 +27,11 @@ def productos():
             return redirect('/login')
     except Exception as e:
         print(e)
+        return redirect('/inicio')
     finally:
         cur.close()
 
+#Se accede a la vista del producto
 @app.route('/producto/<int:id>')
 def producto(id=None):
     try:
@@ -60,16 +63,14 @@ def producto(id=None):
            
 
             return render_template('views/producto.html', items=items, fotos= fotos, len_f = len(fotos))
-            # if session['tipo_usuario'] == 'C':
-            # else:
-            #     return render_template('views/producto.html', items=items, fotos= fotos, len_f = len(fotos))
 
     except Exception as e:
         print(e)
+        return redirect('/inicio')
     finally:
        cur.close()
 
-#recibe el id del producto y agrega un comentario via AXIOS
+#Recibe el id del producto y agrega un comentario via AXIOS
 @app.route('/comentarios_api/<int:id>', methods=['POST', 'GET'])
 def comentarios(id=None):
     try:
@@ -150,7 +151,7 @@ def new_prod():
     finally:
         cur.close()
 
-
+#Se obtienen las categorias de los productos, y de pueden agregar tambien
 @app.route('/categorias_productos_api', methods=['GET','POST'])
 def categorias():
     try:
@@ -178,9 +179,11 @@ def categorias():
             return res
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()
 
+#Editar un producto en especifico
 @app.route('/editar_producto/<int:id>', methods=['GET', 'POST'])
 def editarProducto(id = None):
     try:

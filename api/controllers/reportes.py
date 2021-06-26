@@ -17,6 +17,7 @@ def reportes():
     finally:
         cur.close()
 
+#Se accede a los reportes de compras AXIOS
 @app.route('/reporte_compras_api', methods=['POST'])
 def compras():
     try:
@@ -32,12 +33,12 @@ def compras():
             _fecha2 = _json['fechaFin']
 
             data = []
-            query = "SELECT p.id_prod, p.descripcion, SUM(t.cantidad), p.precio, SUM(c.total) FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod LEFT JOIN tbl_compras c ON c.id_comp = t.id_comp WHERE c.id_comprador = %s AND c.fecha BETWEEN %s AND %s GROUP BY p.id_prod"
+            query = "SELECT p.id_prod, p.descripcion, SUM(t.cantidad), p.precio, SUM(c.total), p.costoenvio FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod LEFT JOIN tbl_compras c ON c.id_comp = t.id_comp WHERE c.id_comprador = %s AND c.fecha BETWEEN %s AND %s GROUP BY p.id_prod"
             values = (_id, _fecha1, _fecha2)
             cur.execute(query, values)
             rows = cur.fetchall()
             for row in rows:
-                data.append({'id': row[0], 'descripcion': row[1],'precio':row[3],'cantidad': int(float(row[2])),'total': row[4]})
+                data.append({'id': row[0], 'descripcion': row[1], 'costo envio': row[5] ,'precio':row[3],'cantidad': int(float(row[2])),'total': row[4]})
 
             res = jsonify(data)
             res.status_code = 200
@@ -45,27 +46,29 @@ def compras():
 
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()
 
-@app.route('/reporte_ventas_api')
+#Se obtienen las ventas AXIOS
+@app.route('/reporte_ventas_api', methods=['POST'])
 def ventas():
     try:
         if 'usuario' in session and session['tipo_usuario'] == 'T':
             cur = mysql.connect().cursor()
             
             _json = request.get_json(force=True)
-            _id = session['tienda_id']
-            _fecha1 = _json['fecha_inicio']
-            _fecha2 = _json['fecha_fin']
+            _id = session['id']
+            _fecha1 = _json['fechaInicio']
+            _fecha2 = _json['fechaFin']
 
             data = []
-            query = "SELECT DISTINCT p.id_prod, p.descripcion, SUM(t.cantidad), SUM(c.total) FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod LEFT JOIN tbl_compras c ON c.id_comp = t.id_comp WHERE p.usr_id = %s AND c.fecha BETWEEN %s AND %s GROUP BY p.id_prod"
-            values = (_id, _fecha1, _fecha2)
+            query = "SELECT DISTINCT p.id_prod, p.descripcion, p.stock, DATE_FORMAT(p.publicacion, %s), p.precio, p.tiempoenvio, p.costoenvio, SUM(t.cantidad), SUM(c.total) FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod LEFT JOIN tbl_compras c ON c.id_comp = t.id_comp WHERE p.usr_id = %s AND c.fecha BETWEEN %s AND %s GROUP BY p.id_prod"
+            values = ("%d %M %Y",_id, _fecha1, _fecha2)
             cur.execute(query, values)
             rows = cur.fetchall()
             for row in rows:
-                data.append({'id': row[0], 'descripcion': row[1],'cantidad': row[2], 'total': row[3]})
+                data.append({'id': row[0], 'descripcion': row[1], 'stock':row[2], 'publicacion':row[3], 'precio':row[4], 'tiempo envio': row[5], 'costo envio': row[6],'cantidad': float(row[7]), 'total': row[8]})
 
             return jsonify(data)
         else:
@@ -77,6 +80,7 @@ def ventas():
     finally:
         cur.close()
 
+#Se otienen las facturas AXIOS
 @app.route('/reporte_facturas_api')
 def facturas():
     try:
@@ -84,11 +88,19 @@ def facturas():
 
         facturas = []
         data = {}
-        cur.execute("SELECT t.id_comp, DATE_FORMAT(t.fecha, %s), t.total, p.nombrepropietario, p.numero, u.nombre, d.numcasillero, d.provincia FROM tbl_compras t LEFT JOIN tbl_metodosdepago p ON t.id_pago = p.id_pago LEFT JOIN tbl_usuarios u ON u.id_usr = t.id_tienda LEFT JOIN tbl_direccionesdeenvio d ON d.id_dire = d.id_dire WHERE t.id_comprador = %s", ("%d %M %Y",session['id'],))
+        #Verifica si es un comprador o tienda
+        if session['tipo_usuario'] is 'C':
+            cur.execute("SELECT t.id_comp, DATE_FORMAT(t.fecha, %s), t.total, p.nombrepropietario, p.numero, u.nombre, d.numcasillero, d.provincia FROM tbl_compras t LEFT JOIN tbl_metodosdepago p ON t.id_pago = p.id_pago LEFT JOIN tbl_usuarios u ON u.id_usr = t.id_tienda LEFT JOIN tbl_direccionesdeenvio d ON d.id_dire = d.id_dire WHERE t.id_comprador = %s", ("%d %M %Y",session['id'],))
+        else:
+            cur.execute("SELECT t.id_comp, DATE_FORMAT(t.fecha, %s), t.total, p.nombrepropietario, p.numero, u.nombre, d.numcasillero, d.provincia FROM tbl_compras t LEFT JOIN tbl_metodosdepago p ON t.id_pago = p.id_pago LEFT JOIN tbl_usuarios u ON u.id_usr = t.id_comprador LEFT JOIN tbl_direccionesdeenvio d ON d.id_dire = d.id_dire WHERE t.id_tienda = %s", ("%d %M %Y",session['id'],))
+        
         rows = cur.fetchall()
         for row in rows:
-            data = {'id': row[0], 'fecha':row[1], 'total':row[2], 'metodopago':{'propietario': row[3], 'numero': row[4]}, 'tienda': row[5], 'direccionenvio': {'casillero':row[6], 'provincia':row[7]}, 'productos':[]}
-            
+            if session['tipo_usuario'] is 'C':
+                data = {'id': row[0], 'fecha':row[1], 'total':row[2], 'metodopago':{'propietario': row[3], 'numero': row[4]}, 'tienda': row[5], 'direccionenvio': {'casillero':row[6], 'provincia':row[7]}, 'productos':[]}
+            else:
+                data = {'id': row[0], 'fecha':row[1], 'total':row[2], 'metodopago':{'propietario': row[3], 'numero': row[4]}, 'comprador': row[5], 'direccionenvio': {'casillero':row[6], 'provincia':row[7]}, 'productos':[]}
+
             cur.execute("SELECT p.descripcion, p.tiempoenvio, p.costoenvio, t.cantidad, p.precio FROM productos t LEFT JOIN tbl_productos p ON p.id_prod = t.id_prod WHERE t.id_comp = %s", (data['id'], ))
             prods = cur.fetchall()
             for prod in prods:
@@ -103,6 +115,7 @@ def facturas():
     finally:
         cur.close()
 
+#Retornar las suscripciones del comprador AXIOS
 @app.route('/reporte_suscripciones_api')
 def suscripciones():
     try:
@@ -127,9 +140,11 @@ def suscripciones():
 
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()
 
+#Retorna productos con filtro establecido AXIOS
 @app.route('/reporte_ofertas_api', methods=['POST'])
 def ofertas():
     try:
@@ -156,5 +171,6 @@ def ofertas():
             return jsonify(productos)
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()

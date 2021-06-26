@@ -5,7 +5,7 @@ function apiURL(service) { //Función para formar la ruta completa a la API
 
 var fechaInicio;
 var fechaFin;
-
+//Ventana de reportes
 window.onload = function () {
     var myChart = null;
     var vm = new Vue({
@@ -36,22 +36,32 @@ window.onload = function () {
             },
             categorias:[],
             fields:{
-                compras:['descripcion', 'cantidad', 'precio','total'],
+                compras:['descripcion', 'costo envio','cantidad', 'precio','total'],
                 facturas:['descripcion', 'tiempo envio', 'costo envio', 'cantidad', 'precio'],
                 suscripciones:{
                     tiendas:['nombre', 'email'],
                     productos:['descripcion', 'precio','categoria', 'tienda']
                 },
                 ofertas:['descripcion', 'categoria', 'precio', 'publicacion'],
-                ventas:['descripcion', 'stock', 'publicacion', 'precio', 'tiempo envio', 'costo envio', 'categoria']
+                ventas:['descripcion', 'stock', 'publicacion', 'precio', 'tiempo envio', 'costo envio', 'cantidad', 'total']
+            },
+            compras:{
+                total:0,
+                cantidad:0
+            },
+            ventas:{
+                total:0,
+                cantidad:0
             }
 
         },
         mounted() {
             this.id = document.getElementById('id').value;
             // this.visibilityFechas();
+            // this.grafico(null, null);
             this.getCategorias();
-        }, methods: { //Aquí van las funciones VUE 
+        }, methods: { 
+            //Categorias de los productos
             getCategorias(){
                 axios.get(apiURL('categorias_productos_api'))
                 .then((response) => {
@@ -59,24 +69,44 @@ window.onload = function () {
                     this.ofertas.categoria = this.categorias;
                 }).catch(error => { alertify.error(error); });
             },
+            //Obtiene las facturas
             getFacturas(){
                 axios.get(apiURL('reporte_facturas_api')).then((response) => {
                     this.reportes.facturas = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Obtiene las ventas realizadas
             getVentas(){
-                axios.get(apiURL('reporte_ventas_api')).then((response) => {
+                axios.post(apiURL('reporte_ventas_api'), JSON.stringify({'fechaInicio':this.fechaInicio, 'fechaFin':this.fechaFin}))
+                .then((response) => {
                     this.reportes.ventas = response.data;
-                }).catch(error => { alertify.error(error); });
+                    var ventas = this.reportes.ventas;
+                    var labels = [];
+                    var data= [];
+                    //Carga la inforamcion en el grafico
+                    if(myChart != null){
+                        myChart.destroy();
+                    }
+                    if(ventas != []){
+                        ventas.forEach((item) =>{
+                            labels.push(item['descripcion']);
+                            data.push(item['total']);
+                            this.ventas.total += item['total'];
+                            this.ventas.cantidad += item['cantidad'];
+                        });
+                        this.grafico(labels, data, 'doughnut');
+                    }
+                }).catch(error => { console.log(error);alertify.error(error); });
             },
+            //Obtiene las compras hechas
             getCompras(){
                 axios.post(apiURL('reporte_compras_api'), JSON.stringify({'fechaInicio':this.fechaInicio, 'fechaFin':this.fechaFin}))
                 .then((response) => {
                     this.reportes.compras = response.data;
-                    var compras = [];
-                    compras = this.reportes.compras;
+                    var compras = this.reportes.compras;
                     var labels = [];
                     var data= [];
+                    //Carga la informacion en el grafico
                     if(myChart != null){
                         myChart.destroy();
                     }
@@ -84,12 +114,15 @@ window.onload = function () {
                         compras.forEach((item) =>{
                             labels.push(item['descripcion']);
                             data.push(item['total']);
+                            this.compras.total += item['total'];
+                            this.compras.cantidad += item['cantidad'];
                         });
-                        this.grafico(labels, data);
+                        this.grafico(labels, data, 'bar');
                     }
 
                 }).catch(error => { alertify.error(error); });
             },
+            //Obtiene las suscripciones
             getSuscripciones(){
                 axios.get(apiURL('reporte_suscripciones_api')).then((response) => {
                     var aux = this.suscripciones;
@@ -97,6 +130,7 @@ window.onload = function () {
                     aux.tiendas  = response.data[1];
                 }).catch(error => { alertify.error(error); });
             },
+            //Ofertas con filtros
             getOfertas(){
                 var info = {'fechaInicio': this.fechaInicio, 
                             'fechaFin':this.fechaFin, 
@@ -106,6 +140,7 @@ window.onload = function () {
                     this.reportes.ofertas = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Limpia los arrays
             clean(){
                 this.reportes.facturas = [];
                 this.reportes.ventas = [];
@@ -113,6 +148,7 @@ window.onload = function () {
                 this.reportes.compras = [];
                 this.reportes.ventas = [];
             },
+            //Seleccion de tipo de reporte
             seleccion(){
                 switch (this.tipo) {
                     case 'C':
@@ -127,8 +163,6 @@ window.onload = function () {
                     case 'S':
                         this.getSuscripciones();
                         break;
-                    case 'P':
-                        break;
                     case 'V':
                         this.getVentas();
                         break;
@@ -137,6 +171,7 @@ window.onload = function () {
                         break;
                 }
             },
+            //Muestra el reporte
             mostrar(){
                 if(this.select == '') {
                     alertify.error("Seleciona un tipo de reporte");
@@ -146,31 +181,29 @@ window.onload = function () {
                     this.seleccion();
                 }
             },
-            grafico(labels, dataset){
+            render(){
+                
+            },
+            //Grafico a mostrar
+            grafico(labels, dataset, type){
                 var ctx = document.getElementById('myChart').getContext('2d');
                 
                 var data = {
-                    labels: [
-                    'Red',
-                    'Blue',
-                    'Yellow'
-                    ],
-                    // labels:labels,
+                    labels:labels,
                     datasets: [{
-                    label: 'My First Dataset',
-                    data: [300, 50, 100],
-                    // data: dataset,
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                    hoverOffset: 4
+                        label: 'Gastado',
+                        data: dataset,
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)'
+                        ],
+                        hoverOffset: 4
                     }]
                 };
 
                 myChart = new Chart(ctx, {
-                    type: 'doughnut',
+                    type: type,
                     data: data,
                 });
             }

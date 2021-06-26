@@ -21,31 +21,40 @@ window.onload = function () {
                 dada:0,
                 nueva:0,
             },
-            redes_sociales:[]
+            redes_sociales:[],
+            lista_deseos:[],
+            seguidores:[]
         },
         mounted() {
             this.tienda.id = document.getElementById("id").value;
-            this.getData(); // Carga los datos desde el inicio (se creará más adelante) 
-        }, methods: { //Aquí van las funciones VUE 
+            this.getData(); //Se cargan los datos iniciales
+        }, methods: { 
             getData(){
                 this.getProductos();
                 this.getSeguimiento();
                 this.getCalificacion();
                 this.getRedesSociales();
+                this.getSeguidores();
+                this.getListaDeseos();
             },
+            //Productos de la tienda
             getProductos(){
                 axios.get(apiURL('tienda_api/'+this.tienda.id)).then((response) => {
                     this.productos = response.data;
-                    // this.masVendidos = response.data.masVendidos;
-                    // console.log(response.data);
                 }).catch(error => {
                     console.log(error); alertify.error(error); });
             },
+            //Funcion de buscar
             search(){
-                axios.get(apiURL('tienda_api/'+this.tienda.id), JSON.stringify({'search': this.search})).then((response) => {
-                    this.productos = response.data.productos;
-                }).catch(error => { alertify.error(error); });
+                if(this.tienda.search != ''){
+                    axios.get(apiURL('search_tienda_api/'+this.tienda.search +'/'+this.tienda.id)).then((response) => {
+                        this.productos = response.data;
+                    }).catch(error => { alertify.error(error); });
+                } else {
+                    this.getProductos();
+                }
             },
+            //Se obtiene la calificacion
             getCalificacion(){
                 axios.get(apiURL('calificacion_tienda_api/'+this.tienda.id),).then((response) => {
                     var data = response.data;
@@ -53,6 +62,7 @@ window.onload = function () {
                     this.tienda.puntaje = data[1].tienda;
                 }).catch(error => { alertify.error(error); });
             },
+            //Se actuliza la calificacion
             saveCalificacion(){
                 if(this.calificacion.dada == 0){
                     axios.post(apiURL('calificacion_tienda_api/'+this.tienda.id), JSON.stringify({'calificacion': this.calificacion.nueva})).then((response) => {
@@ -65,16 +75,31 @@ window.onload = function () {
                 }
                 this.getData();
             },
+            //Seguidores
+            getSeguidores(){
+                axios.get(apiURL('get_seguidores_api/'+this.tienda.id)).then((response) => {
+                    this.seguidores = response.data;
+                }).catch(error => { alertify.error(error); });
+            },
+            // Los productos que estan en listas de deseos
+            getListaDeseos(){
+                axios.get(apiURL('productos_listadeseos_api/'+this.tienda.id)).then((response) => {
+                    this.lista_deseos = response.data;
+                }).catch(error => { alertify.error(error); });
+            },
+            //Redes sociales
             getRedesSociales(){
                 axios.get(apiURL('redes_sociales_api/'+this.tienda.id)).then((response) => {
                     this.redes_sociales = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Si eres comprador, api para saber si sigues la tienda
             getSeguimiento(){
                 axios.get(apiURL('seguimiento_api/'+this.tienda.id)).then((response) => {
                     this.seguir = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Poder actualizar seguimiento
             actualizarSeguimiento(type){
                 axios.post(apiURL('seguimiento_api/'+this.tienda.id), JSON.stringify({'seguir': type})).then((response) => {
                     this.getSeguimiento();

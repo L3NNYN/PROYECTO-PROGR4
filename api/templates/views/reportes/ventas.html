@@ -1,0 +1,6 @@
+<div v-if="reportes.ventas != '' " class="m-5">
+    <b-table hover :items="reportes.ventas" :fields="fields.ventas">
+    </b-table>
+    <h5>&nbsp;&nbsp;Total obtenido: $[[ventas.total]], Total vendido: [[ventas.cantidad]] &nbsp;&nbsp;</h5>
+</div>
+<h2 v-else>No hay ventas en las fechas seleccionadas</h2>

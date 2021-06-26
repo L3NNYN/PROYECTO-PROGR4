@@ -21,7 +21,7 @@
             <div id="masVendidos" class="m-5 p-2">
                 <h3>Más vendidos <i class="fas fa-fire"></i></h3>
                     <div v-if="masVendidos != '' " class="d-flex flex-row">
-                            <div class="card-group">
+                            <!-- <div class="card-group"> -->
                                 <b-card v-for="item in masVendidos" class="mx-2" border-variant="warning">
                                     <b-card-text>
                                         <div class="d-flex flex-column text-center">
@@ -43,19 +43,19 @@
                                         {%endif%}
                                     </b-card-footer>
                                 </b-card>
-                            </div>
+                            <!-- </div> -->
                     </div>                
                 <h6 v-else class="m-5">No hay productos vendidos hasta el momento.</h6>
             </div>
             <div id="todos" class="m-5 p-2">
                 <h3>Todos los productos <i class="fas fa-box-open"></i></h3>
                 <div v-if="productos != '' " class="d-flex flex-row">
-                    <div class="card-group">
+                    <!-- <div class="card-group"> -->
                         <b-card v-for="item in productos" class="mx-2">
                                 <b-card-text>
                                     <div class="d-flex flex-column text-center">
                                         <h4>[[item.descripcion]]</h5>
-                                        <h6 class="m-2">Precio: [[item.precio]]</h6>
+                                        <h6 class="m-2">Precio: $[[item.precio]]</h6>
                                         <h6 class="m-2">Categoria: [[item.categoria]]</h6>
                                         <small>[[item.fechapublicacion]]</small>
                                     </div>
@@ -69,8 +69,8 @@
                                     {%endif%}
                                 </b-card-footer>
                         </b-card>
-                    </div>
-                    </div>
+                    <!-- </div> -->
+                </div>
                 <h6 v-else class="m-5">No hay productos todavia.</h6>
             </div>
             <div class="m-5 p-2">

@@ -2,6 +2,7 @@ from flask import jsonify, request, render_template, redirect, session
 from init import mysql
 from init import app
 
+#Vista de las notificaciones
 @app.route('/notificaciones')
 def notificaciones():
     try:
@@ -14,9 +15,11 @@ def notificaciones():
 
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()
 
+#Se accede a las notificaciones via AXIOS
 @app.route('/notificaciones_api', methods=['GET', 'DELETE'])
 def notificacionesAPI():
     try:
@@ -26,7 +29,7 @@ def notificacionesAPI():
         if not 'usuario' in session:
             return jsonify('Debes iniciar sesion')
         else:
-            if request.method == 'GET':
+            if request.method == 'GET': #GET AXIOS
                 cur.execute("SELECT n.id_prod, p.descripcion, p.precio FROM notificaciones n LEFT JOIN tbl_productos p ON p.id_prod = n.id_prod WHERE n.visto = 'N' AND n.id_usr = %s", (session['id'], ))
                 rows = cur.fetchall()
                 notificaciones = []
@@ -35,7 +38,7 @@ def notificacionesAPI():
                         notificaciones.append({'id':row[0],'descripcion':row[1], 'precio': row[2]})
             
                 return jsonify(notificaciones)
-            elif request.method == 'DELETE':
+            elif request.method == 'DELETE': #SE LIMPIAN LAS NOTIFICACIONES
                 cur.execute("DELETE FROM notificaciones WHERE id_usr = %s", (session['id'], ))
                 conn.commit()
 
@@ -43,5 +46,6 @@ def notificacionesAPI():
 
     except Exception as e:
         print(e)
+        return jsonify('Ha ocurrido un error')
     finally:
         cur.close()

@@ -3,6 +3,7 @@ function apiURL(service) { //Función para formar la ruta completa a la API
     return BaseApiUrl + service;
 }
 
+//Mantenimiento de las direcciones de envio
 window.onload = function () {
     var vm = new Vue({
         el: '#app',
@@ -21,13 +22,15 @@ window.onload = function () {
         },
         mounted() {
             this.getData();
-        }, methods: { //Aquí van las funciones VUE 
+        }, methods: { 
+            //Obtiene  las direcciones de envio
             getData(){
                 axios.get(apiURL('direcciones_envio_api'))
                 .then((response) => {
                     this.direcciones_envio = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Ingresa direcciones de envio
             insertData(){
                 axios.post(apiURL('direcciones_envio_api'), JSON.stringify(this.form))
                 .then((response) => {
@@ -36,6 +39,16 @@ window.onload = function () {
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });
             },
+            //Actualiza direcciones de envio
+            updateData(){
+                axios.put(apiURL('direcciones_envio_api'), JSON.stringify(this.form))
+                .then((response) => {
+                    this.getData(); 
+                    this.$refs.modal.hide();
+                    alertify.success(response.data);
+                }).catch(error => { alertify.error(error); });
+            },
+            //Cargaa los datos en la modal
            async editForm(id, numCasillero, codPostal, provincia, pais){
                 this.form.id = id;
                 this.form.numCasillero = numCasillero;
@@ -50,9 +63,14 @@ window.onload = function () {
                 }).catch(error => { alertify.error(error); });
 
             },
+            //Borra una direccion de envio
             deleteData(id){
-
+                axios.delete(apiURL('direcciones_envio_api/'+id)).then((response) => {
+                    this.getData(); 
+                    alertify.success(response.data);
+                }).catch(error => { alertify.error(error); });
             },
+            //Envia los datos
             async insertForm(){
                 await axios.get(apiURL('paises_api'))
                 .then((response) => {
@@ -60,12 +78,18 @@ window.onload = function () {
                 }).catch(error => { alertify.error(error); });
                 this.formTitle = "Agregar Direccion de Envio"
             },
+            //Gaurdar en modal
             save(evt){
                 evt.preventDefault()
                     if(this.form.numCasillero != '' && this.form.codPostal != '' && this.form.provincia != '' && this.form.id_pais != ''){
-                        this.insertData();
+                        if(this.form.id == ''){
+                            this.insertData();
+                        } else{
+                            this.updateData();
+                        }
                     } else { return}
             },
+            //Reincia la modal
             reset(){
                 this.resetData();
                 this.formTitle = '';

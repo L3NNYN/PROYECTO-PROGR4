@@ -16,13 +16,12 @@
    <h4 class="my-2">Tipo de reporte</h4>
    <div class="my-2 d-flex flex-row">
         <input type="hidden" id="id" value="{{id}}" />
+        <b-form-radio v-model="select" name="tipo" value="F" class="mx-2">Facturas</b-form-radio>
        {% if session.tipo_usuario == 'C' %}
        <b-form-radio v-model="select" name="tipo" value="C" class="mx-2">Compras</b-form-radio>
-       <b-form-radio v-model="select" name="tipo" value="F" class="mx-2">Facturas</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="S" class="mx-2">Suscripciones</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="O" class="mx-2">Ofertas</b-form-radio>
        {%else%}
-       <b-form-radio v-model="select" name="tipo" value="P" class="mx-2">Productos comprados</b-form-radio>
        <b-form-radio v-model="select" name="tipo" value="V" class="mx-2">Ventas</b-form-radio>
        {%endif%}
     </div>
@@ -38,19 +37,27 @@
                 <label class="mt-2" for="fechaFinal">Fecha final</label>
                 <b-form-datepicker id="fechaFinal" v-model="fechaFin" class="mb-2 w-50"></b-form-datepicker>
             </div>
-        {% if session.tipo_usuario == 'C' %}
-
-            <div v-if="tipo == 'C'">
-                <div class="d-flex flex-column align-items-center">
-                    <canvas id="myChart" width="400" height="400"></canvas>
+            
+            <div v-if="select == 'C' || select == 'V' ">
+                <div class="d-flex flex-column text-center">
+                    <div>
+                        <div class="w-25">
+                            <canvas id="myChart" width="100px" height="100px"></canvas>
+                        </div>
+                    </div>
                 </div>
-                {% include "views/reportes/compras.html" %}
             </div>
-            <div v-if="tipo == 'F'">
+            
+            <div v-if="select == 'F'">
                 {% include "views/reportes/factura.html" %}
             </div>
-            <div v-if="tipo == 'S' ">
-                {% include "views/reportes/suscripciones.html" %}
+
+            {% if session.tipo_usuario == 'C' %}
+            <div  v-if="select == 'C' ">
+            {% include "views/reportes/compras.html" %}
+            </div>
+            <div v-if="select == 'S' ">
+            {% include "views/reportes/suscripciones.html" %}
             </div>
             <div v-if="select == 'O'" class="d-flex flex-column align-items-center mt-3">
                 
@@ -59,12 +66,12 @@
                 <label for="categoria">Categoria</label>
                 <b-form-select id="categoria" name="categoria" v-model="ofertas.categoria" :options="categorias" class="my-2 w-50" required></b-form-select>
                 
-                <div v-if="tipo == 'O' ">
+                <div v-if="select == 'O' ">
                     {% include "views/reportes/ofertas.html" %}
                 </div>
             </div>
             {%else%}
-            <div v-if="reportes.ventas != '' ">
+            <div v-if="select == 'V' && reportes.ventas != '' ">
                 {% include "views/reportes/ventas.html" %}
             </div>
             {%endif%}

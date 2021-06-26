@@ -2,6 +2,7 @@ from flask import jsonify, request, render_template, redirect, session
 from init import mysql
 from init import app
 
+#Se accede a la vista de redes sociales
 @app.route('/redes_sociales')
 def redes():
     try: 
@@ -22,7 +23,7 @@ def redes_api(id=None):
             return jsonify('Deberias loguearte')
         else :
 
-            if request.method == 'GET':
+            if request.method == 'GET': #AXIOS GET
                 if id == None:
                     cur.execute("SELECT t.id_reds, t.descripcion FROM tbl_redessociales t WHERE t.usr_id = %s", (session['id'], ))
                 else:
@@ -37,7 +38,7 @@ def redes_api(id=None):
                     content = {}
                 return jsonify(json_items)
 
-            elif request.method == 'POST':
+            elif request.method == 'POST':#AXIOS POST
 
                 _json = request.get_json(force=True)
                 _descripcion = _json['descripcion']
@@ -46,7 +47,7 @@ def redes_api(id=None):
 
                 return jsonify('Red social agregada correctamente.')
 
-            elif request.method == 'PUT':
+            elif request.method == 'PUT': #AXIOS PUT
 
                 _json = request.get_json(force=True)
                 _descripcion = _json['descripcion']
@@ -56,7 +57,7 @@ def redes_api(id=None):
 
                 return jsonify('Red social actualizada correctamente correctamente.')
 
-            elif request.method == 'DELETE':
+            elif request.method == 'DELETE': #AXIOS DELETE
                 cur.execute("DELETE FROM tbl_redessociales WHERE id_reds = %s", (id,))
                 conn.commit()
                 return jsonify('Red social borrada.')

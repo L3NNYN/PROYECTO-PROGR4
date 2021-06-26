@@ -6,8 +6,8 @@ from init import app
 
 import bcrypt
 
-@app.route('/login', methods=['POST', 'GET']) #Sólo podrá ser accedida vía POST 
-@app.route('/login/<msg>')
+#Metodo para login
+@app.route('/login', methods=['POST', 'GET']) 
 def login():
     try: 
         cur = mysql.connect().cursor()
@@ -16,23 +16,22 @@ def login():
             return render_template('views/login.html')
         elif request.method == 'POST':
             data = request.form
-            # _json = request.get_json(force=True) #Obtiene en formato JSON los datos enviados desde el front-End
             _usuario = data['usuario']
             _password = data['password']
             cur.execute("SELECT t.usuario, t.password, t.nombre, t.tipo_usuario, t.id_usr FROM tbl_usuarios t WHERE usuario = %s", (_usuario))
             rows = cur.fetchone()
-            if rows and bcrypt.checkpw(_password.encode('utf8'), rows[1].encode('utf8')):
+            if rows and bcrypt.checkpw(_password.encode('utf8'), rows[1].encode('utf8')): #se encripta el password
+                #Se guardan variables globales
                 session.permanent = False
                 session['carrito'] = []
                 session['usuario'] = rows[0]
                 session['nombre'] = rows[2]
                 session['tipo_usuario'] = rows[3]
                 session['id'] = rows[4]
+
                 return redirect('/inicio')
             else:
-                m = "Credenciales incorrectas"
                 return redirect('/login')
-            # return redirect('/login', msg='wenas')
     except Exception as e: 
         res = jsonify('Ha ocurrido un error: ')
         print(e)
@@ -42,7 +41,8 @@ def login():
         print('/login')
         cur.close()
 
-@app.route('/signup', methods=['POST']) #Sólo podrá ser accedida vía POST
+#Metodo para signup
+@app.route('/signup', methods=['POST']) 
 def singup(): 
     try:
         conn = mysql.connect() 
@@ -58,6 +58,7 @@ def singup():
         _usuario = data['usuario']
         _password = bcrypt.hashpw(data['password'].encode('utf8'), bcrypt.gensalt(10)) #se encripta la contraseña
 
+        #se crean las fotos
         f = request.files['foto']
         filename = secure_filename(f.filename)
         f.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
@@ -77,10 +78,12 @@ def singup():
     finally: 
         cur.close()
 
+#se envia la vista de signup
 @app.route('/signup', methods=['GET'])
 def signup():
     return render_template('views/signup.html')
 
+#Se borran las variables globales
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('usuario', None)

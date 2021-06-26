@@ -2,15 +2,17 @@ from flask import jsonify, request, render_template, redirect, session, flash
 from init import app
 from init import mysql
 
-
+#Vistas index
 @app.route('/')
 def render():
     return render_template("views/index.html")
 
+#VIsta de inicio
 @app.route('/inicio')
 def inicio():
     return render_template("views/inicio.html")
 
+#Get paises AXIOS
 @app.route('/paises_api')
 def paises():
     try:

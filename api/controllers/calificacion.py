@@ -2,6 +2,7 @@ from flask import jsonify, request, render_template, redirect, session, flash
 from init import app
 from init import mysql
 
+#Metodo para obtener, guardar y actualizar calificaciones de las tiendas AXIOS
 @app.route('/calificacion_tienda_api/<int:id>', methods=['GET', 'POST', 'PUT'])
 def calificacionTienda(id=None):
     try:
@@ -11,7 +12,7 @@ def calificacionTienda(id=None):
         if id == None and not 'usuario' in session:
             return jsonify('Loggueate')
         else:
-            if request.method == 'GET':
+            if request.method == 'GET': #VIA GET
                 
                 data = []
                 cur.execute("SELECT t.calificacion FROM calificaciontienda t WHERE t.id_comprador = %s AND t.id_tienda = %s", (session['id'], id,))
@@ -21,7 +22,6 @@ def calificacionTienda(id=None):
                 else:
                     data.append({'dada':'0'})
 
-                # cur.execute("SELECT SUM(c.calificacion) / COUNT(c.calificacion) FROM tbl_usuarios t LEFT JOIN calificaciontienda c ON c.id_tienda = t.id_usr WHERE t.estado = 'A' AND t.id_usr = %s", (id,))
                 cur.execute("SELECT SUM(c.calificacion) / COUNT(c.calificacion) FROM calificaciontienda c WHERE c.id_tienda = %s", (id,))
                 row = cur.fetchone()
                 if row[0] != None:
@@ -31,7 +31,7 @@ def calificacionTienda(id=None):
 
                 return jsonify(data)
 
-            elif request.method == 'POST':
+            elif request.method == 'POST': #VIA POST
                 _json = request.get_json(force= True)
                 _calificacion = _json['calificacion']
                 _comprador = session['id']
@@ -42,7 +42,7 @@ def calificacionTienda(id=None):
                 
                 return jsonify('Calificacion ingresada correctamente')
 
-            elif request.method == 'PUT':
+            elif request.method == 'PUT': #VIA PUT
                 _json = request.get_json(force= True)
                 _calificacion = _json['calificacion']
                 _comprador = session['id']
@@ -58,6 +58,8 @@ def calificacionTienda(id=None):
     finally:
         cur.close()
 
+
+#Metodo para obtener, guardar y actualizar calificaciones de los productos AXIOS
 @app.route('/calificacion_producto_api/<int:id>', methods=['GET', 'POST', 'PUT'])
 def calificacionProducto(id=None):
     try:
@@ -66,7 +68,7 @@ def calificacionProducto(id=None):
         if id == None and not 'usuario' in session:
             return jsonify('Loggueate')
         else:
-            if request.method == 'GET':
+            if request.method == 'GET': #VIA GET
                 
                 data = []
                 cur.execute("SELECT calificacion FROM calificacionproducto WHERE usr_id = %s AND id_producto = %s", (session['id'], id,))
@@ -85,7 +87,7 @@ def calificacionProducto(id=None):
 
                 return jsonify(data)
 
-            elif request.method == 'POST':
+            elif request.method == 'POST': #VIA POST
                 _json = request.get_json(force= True)
                 _calificacion = _json['calificacion']
                 _comprador = session['id']
@@ -96,7 +98,7 @@ def calificacionProducto(id=None):
                 
                 return jsonify('Calificacion ingresada correctamente')
 
-            elif request.method == 'PUT':
+            elif request.method == 'PUT': #VIA PUT
                 _json = request.get_json(force= True)
                 _calificacion = _json['calificacion']
                 _comprador = session['id']

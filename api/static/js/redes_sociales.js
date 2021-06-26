@@ -2,6 +2,8 @@ var BaseApiUrl = "http://localhost:5000/"; //ruta base a la API
 function apiURL(service) { //Función para formar la ruta completa a la API 
     return BaseApiUrl + service;
 }
+
+//Redes sociales
 window.onload = function () {
     var vm = new Vue({
         el: '#app',
@@ -14,17 +16,20 @@ window.onload = function () {
             }
         },
         mounted() {
-            this.getData(); // Carga los datos desde el inicio (se creará más adelante) 
-        }, methods: { //Aquí van las funciones VUE 
+            this.getData(); 
+        }, methods: { 
+            //Obtiene las redes sociales
             getData(){
                 axios.get(apiURL('redes_sociales_api')).then((response) => {
                     this.redes_sociales = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Nueva red
             insertForm(){
                 this.form.id = ''; 
                 this.form.descripcion = '';
             },
+            //Guarda red
             save(){
                 if (this.form.descripcion != ''){
                     if (this.form.id == ''){
@@ -44,16 +49,19 @@ window.onload = function () {
                     return;
                 }
             },
+            //Editar la red
             editForm(id, descripcion){
                 this.form.id = id;
                 this.form.descripcion = descripcion;
             },
+            //Borrar red social
             deleteData(id){
                 axios.delete(apiURL('redes_sociales_api/' + id)).then((response) => {
                     this.getData();
                     alertify.success(response.data);
                 }).catch(error => { alertify.error(error); });
             },
+            //Reinciiar el modal
             reset(){
                 this.form.id = ''; 
                 this.form.descripcion = '';

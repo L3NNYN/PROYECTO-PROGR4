@@ -117,11 +117,11 @@ def deseos(id = None):
                 if _json['agregar'] == 'T':
                     cur.execute("INSERT INTO listadeseos (usr_id, id_producto) VALUES (%s, %s)", (session['id'], _id_producto))
                     conn.commit()
-                    res = "Añadido a tu lista de deseos correctamente, se te notificaran cambios en su precio y descripcion de ahora en adelante."
+                    res = "Añadido a tu lista de deseos, se te notificaran sus cambios de ahora en adelante."
                 elif _json['agregar'] == 'F':
                     cur.execute("DELETE FROM listadeseos WHERE usr_id = %s AND id_producto = %s", (session['id'], _id_producto))
                     conn.commit()
-                    res = "Eliminado de tu lista de deseos, dejaras de recibir notificaciones de este producto."
+                    res = "Listo, dejaras de recibir notificaciones de este producto."
 
             elif request.method == 'GET':
                 cur.execute("SELECT * FROM listadeseos WHERE usr_id = %s AND id_producto = %s", (session['id'], id))
@@ -136,8 +136,7 @@ def deseos(id = None):
         print(e)
     finally:
         cur.close()
-
-
+        
 def aux():
     try:
         conn = mysql.connect()

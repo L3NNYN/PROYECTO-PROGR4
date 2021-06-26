@@ -27,7 +27,10 @@
                     <b-link :href="'https://'+red.descripcion"><h6>[[red.descripcion]]</h6></b-link>
                 </div>
                 {%if item[0].id == session.id %}
-                    <b-button href="/editar_usuario" variant="primary badge-pill mt-4"><i class="fas fa-user-edit"></i> Editar informacion</b-button>
+                    <b-button href="/editar_usuario" variant="primary badge-pill my-4"><i class="fas fa-user-edit"></i> Editar informacion</b-button>
+                    <br>
+                    <b-button variant="dark text-white badge-pill my-2" v-b-modal.lista_deseos>Lista de deseos</b-button>
+                    <b-button variant="dark text-white badge-pill my-2" v-b-modal.seguidores>Ver seguidores</b-button>
                 {%endif%}
                 {%if session.usuario != '' and session.tipo_usuario == 'C' %}
                 <div class="d-flex flex-column mt-2">
@@ -61,9 +64,6 @@
                         <b-card-footer class="d-flex flex-column align-items-center">
                             <div v-if="tienda.id == producto.tienda_id" class="div">
                                 <b-button :href="'/producto/'+ producto.id" variant="outline-info mx-2">Ver</b-button>
-                                {%if session.tipo_usuario == 'C'%}
-                                <b-button @click="agregarCarrito(producto.id, producto.tienda_id)" variant="primary">Agregar al carrito</b-button>
-                                {%endif%}    
                             </div>
                             <a v-else class="btn btn-primary" href="/edit_producto/{{item.id}}"><i class="fas fa-pen"></i> Editar</a>
                         </b-card-footer>
@@ -87,6 +87,30 @@
     <template slot="modal-footer" slot-scope="{ ok, cancel }">
         <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
         <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+    </template>
+</b-modal>
+<b-modal id="seguidores" ref="seguidores"> 
+    <template slot="modal-header">
+    <h3>Seguidores</h3>
+    </template>
+    <b-list-group v-if="seguidores != '' ">
+        <b-list-group-item v-for="item in seguidores"><b-link :href="'/perfil/'+item.id">[[item.nombre]]</b-link></b-list-group-item>
+    </b-list-group>
+    <h5 v-else>No tienes seguidores</h5>
+    <template slot="modal-footer" slot-scope="{ ok, cancel }">
+        <b-button size="sm" variant="primary" @click="cancel()">Cerrar</b-button>
+    </template>
+</b-modal>
+<b-modal id="lista_deseos" ref="lista_deseos"> 
+    <template slot="modal-header">
+    <h3>Productos en lista de deseos</h3>
+    </template>
+    <b-list-group v-if="lista_deseos != '' ">
+        <b-list-group-item v-for="item in lista_deseos"><b-link :href="'/perfil/'+item.id">[[item.nombre]]</b-link>: [[item.producto]]</b-list-group-item>
+    </b-list-group>
+    <h5 v-else>No hay productos listas de deseos</h5>
+    <template slot="modal-footer" slot-scope="{ ok, cancel }">
+        <b-button size="sm" variant="primary" @click="cancel()">Cerrar</b-button>
     </template>
 </b-modal>
         

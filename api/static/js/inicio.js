@@ -2,6 +2,8 @@ var BaseApiUrl = "http://localhost:5000/"; //ruta base a la API
 function apiURL(service) { //Función para formar la ruta completa a la API 
     return BaseApiUrl + service;
 }
+
+//Ventana de inicio
 window.onload = function () {
     var vm = new Vue({
         el: '#app',
@@ -18,13 +20,14 @@ window.onload = function () {
             filtro:''
         },
         mounted() {
-            this.getData(); // Carga los datos desde el inicio (se creará más adelante) 
-        }, methods: { //Aquí van las funciones VUE 
+            this.getData(); //Carga los datos
+        }, methods: { 
             getData(){
                 this.getTiendas(this.filtro);
                 this.getProductos(this.filtro);
                 this.getMasVendidos(this.filtro);
             },
+            //Obtiene todas las tiendas, filtradas o no
             getTiendas(filter){
                 var url;
                 if(filter){
@@ -36,6 +39,7 @@ window.onload = function () {
                     this.tiendas = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Obtiene tods los prodcutos filtrados filtrados o no
             getProductos(filter){
                 var url;
                 if(filter){
@@ -47,6 +51,7 @@ window.onload = function () {
                     this.productos = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Obtiene los productos mas vendidos filtrados filtrados o no
             getMasVendidos(filter){
                 var url;
                 if(filter){
@@ -59,11 +64,13 @@ window.onload = function () {
                     this.masVendidos = response.data;
                 }).catch(error => { alertify.error(error); });
             },
+            //Boton buscar
             filtrar(){
                this.getProductos(this.filtro);
                this.getTiendas(this.filtro);
                this.getMasVendidos(this.filtro);
             },
+            //Agregar al carrito
             agregarCarrito(id, tienda_id){
                 axios.post(apiURL('add_carrito_api'), JSON.stringify({'id':id, 'tienda_id': tienda_id}))
                 .then((response) => {
