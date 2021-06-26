@@ -1,4 +1,5 @@
 import os
+import re
 from flask import jsonify, request, render_template, redirect, session
 from werkzeug.utils import secure_filename
 from init import mysql
@@ -177,5 +178,45 @@ def categorias():
             return res
     except Exception as e:
         print(e)
+    finally:
+        cur.close()
+
+@app.route('/editar_producto/<int:id>', methods=['GET', 'POST'])
+def editarProducto(id = None):
+    try:
+        conn = mysql.connect()
+        cur = conn.cursor()
+
+        if not 'usuario' in session:
+            return redirect('/login')
+
+
+        if request.method == 'GET':
+            cur.execute("SELECT p.id_prod, p.descripcion, p.stock, p.precio, p.tiempoenvio, p.costoenvio, p.id_categoria FROM tbl_productos p WHERE p.usr_id = %s AND p.id_prod = %s", (session['id'],id,))
+            result = cur.fetchone()
+            item = {}
+            if result != None:
+                item = {'id': result[0], 'descripcion': result[1], 'stock': result[2],  'precio':result[3], 'tiempoEnvio': result[4], 'costoEnvio': result[5], 'categoria': result[6]}
+
+            return render_template('views/editar_producto.html', item=item)
+        elif request.method == 'POST':
+            data = request.form
+            _descripcion = data['descripcion']
+            _stock = data['stock']
+            _precio = data['precio']
+            _tiempoEnvio = data['tiempoEnvio']
+            _costoEnvio = data['costoEnvio']
+            _categoria = data['categoria']
+
+            query = "UPDATE tbl_productos SET descripcion = %s, stock = %s, precio = %s, tiempoEnvio = %s, costoEnvio = %s, id_categoria = %s WHERE id_prod = %s"
+            values = (_descripcion, _stock, _precio, _tiempoEnvio, _costoEnvio, _categoria, id,)
+
+            cur.execute(query, values)
+            conn.commit()
+            
+            return redirect('/productos')
+    except Exception as e:
+        print(e)
+        return redirect('/editar_producto/'+ str(id))
     finally:
         cur.close()

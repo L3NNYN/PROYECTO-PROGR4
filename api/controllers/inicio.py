@@ -54,15 +54,15 @@ def masVendidos(filter = None):
     try:
         cur = mysql.connect().cursor()
         if filter == None:
-            cur.execute("SELECT t.id_prod,t.descripcion, t.precio, c.descripcion, DATE_FORMAT(t.publicacion,'%d %M %Y'), SUM(p.cantidad) FROM productos p LEFT JOIN tbl_productos t ON t.id_prod = p.id_prod LEFT JOIN tbl_categoriasproductos c ON c.id_catp = t.id_categoria GROUP BY p.id_prod ORDER BY SUM(p.cantidad) DESC LIMIT 5")
+            cur.execute("SELECT t.id_prod,t.descripcion, t.precio, c.descripcion, DATE_FORMAT(t.publicacion,'%d %M %Y'), SUM(p.cantidad), t.usr_id FROM productos p LEFT JOIN tbl_productos t ON t.id_prod = p.id_prod LEFT JOIN tbl_categoriasproductos c ON c.id_catp = t.id_categoria GROUP BY p.id_prod ORDER BY SUM(p.cantidad) DESC LIMIT 5")
         else:
-            query = "SELECT t.id_prod,t.descripcion, t.precio, c.descripcion, DATE_FORMAT(t.publicacion, %s), SUM(p.cantidad) FROM productos p LEFT JOIN tbl_productos t ON t.id_prod = p.id_prod LEFT JOIN tbl_categoriasproductos c ON c.id_catp = t.id_categoria WHERE t.descripcion LIKE  %s OR c.descripcion = %s GROUP BY p.id_prod ORDER BY SUM(p.cantidad) DESC LIMIT 5"
+            query = "SELECT t.id_prod,t.descripcion, t.precio, c.descripcion, DATE_FORMAT(t.publicacion, %s), SUM(p.cantidad), t.usr_id FROM productos p LEFT JOIN tbl_productos t ON t.id_prod = p.id_prod LEFT JOIN tbl_categoriasproductos c ON c.id_catp = t.id_categoria WHERE t.descripcion LIKE  %s OR c.descripcion = %s GROUP BY p.id_prod ORDER BY SUM(p.cantidad) DESC LIMIT 5"
             values = ("%d %M %Y", "%"+filter +"%", filter)
             cur.execute(query, values)
         rows = cur.fetchall()
         data = []
         for row in rows:
-            data.append({'id':row[0], 'descripcion':row[1], 'precio':row[2], 'categoria':row[3], 'fechapublicacion':row[4],'vendido':float(row[5])})
+            data.append({'id':row[0], 'descripcion':row[1], 'precio':row[2], 'categoria':row[3], 'fechapublicacion':row[4],'vendido':float(row[5]), 'tienda_id':row[6]})
         
         return jsonify(data)
     except Exception as e:

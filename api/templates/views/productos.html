@@ -17,7 +17,7 @@
 
             {% if items %}
                 {% for item in items %}
-                    <b-card img-top tag="article" style="min-width:15rem; min-height: 10rem;" class="m-2">
+                    <b-card class="m-2">
                         <b-card-header>
                             <h4>{{item.descripcion}}</h5>
                         </b-card-header>
@@ -27,8 +27,9 @@
                             <h6>Inventario: {{item.stock}}</h6>
                             <small>{{item.publicacion}}</small>
                         </b-card-text>
-                        <b-card-footer class="d-flex flex-column align-items-center">
-                            <a class="btn btn-primary" href="/edit_producto/{{item.id}}"><i class="fas fa-pen"></i> Editar</a>
+                        <b-card-footer>
+                            <a class="btn btn-outline-info" href="/producto/{{item.id}}"> Ver</a>
+                            <a class="btn btn-primary" href="/editar_producto/{{item.id}}"><i class="fas fa-pen"></i> Editar</a>
                         </b-card-footer>
                     </b-card>
                 {%endfor%}

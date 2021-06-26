@@ -17,10 +17,15 @@
             <div>
                 <img src="/static/pics/{{item[0].foto}}" class="rounded" style="width: 12rem; height: 12rem;" alt="Circle image"></img>
                 <input type="hidden" id="id" value="{{item[0].id}}" />
-                <h3>{{item[0].nombre}}</h3>
-                <h4>{{item[0].email}}</h4>
-                <h4> {{item[0].direccion}} </h4>
                 <b-form-rating id="puntaje" variant="warning" no-border readonly v-model="tienda.puntaje" size="md"></b-form-rating>
+                <h3>{{item[0].nombre}}</h3>
+                <h4>Email: {{item[0].email}}</h4>
+                <h4>Direccion: {{item[0].direccion}} </h4>
+                <h4>Pais: {{item[0].pais}} </h4>
+                <div v-if="redes_sociales != '' " v-for="red in redes_sociales">
+                    <h5 class="mt-5">Redes Sociales</h5>
+                    <b-link :href="'https://'+red.descripcion"><h6>[[red.descripcion]]</h6></b-link>
+                </div>
                 {%if item[0].id == session.id %}
                     <b-button href="/editar_usuario" variant="primary badge-pill mt-4"><i class="fas fa-user-edit"></i> Editar informacion</b-button>
                 {%endif%}
@@ -66,16 +71,6 @@
                 </div>
                 <h6 v-else class="m-1">No hay productos</h6>
             </div>
-            <!-- {%if profile != '' and profile == 'T' %}
-                <div id="reportes" class="m-5 p-2">
-                    <h3>Reportes</h3>
-                    <div class="d-flex flex-column">
-                        <div class="d-flex flex-row">
-                            <h5></h5>
-                        </div>
-                    </div>
-                </div>
-            {%endif%} -->
         </div>
     </div>
 </div>

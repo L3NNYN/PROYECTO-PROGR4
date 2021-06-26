@@ -20,7 +20,8 @@ window.onload = function () {
             calificacion:{
                 dada:0,
                 nueva:0,
-            }
+            },
+            redes_sociales:[]
         },
         mounted() {
             this.tienda.id = document.getElementById("id").value;
@@ -30,6 +31,7 @@ window.onload = function () {
                 this.getProductos();
                 this.getSeguimiento();
                 this.getCalificacion();
+                this.getRedesSociales();
             },
             getProductos(){
                 axios.get(apiURL('tienda_api/'+this.tienda.id)).then((response) => {
@@ -63,8 +65,10 @@ window.onload = function () {
                 }
                 this.getData();
             },
-            puntajetienda(){
-
+            getRedesSociales(){
+                axios.get(apiURL('redes_sociales_api/'+this.tienda.id)).then((response) => {
+                    this.redes_sociales = response.data;
+                }).catch(error => { alertify.error(error); });
             },
             getSeguimiento(){
                 axios.get(apiURL('seguimiento_api/'+this.tienda.id)).then((response) => {

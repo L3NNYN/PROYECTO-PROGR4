@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{%block title%}Editar producto{%endblock%}
+
+{%block head%}
+
+<script src="{{ url_for('static', filename = '/js/categorias_producto.js') }}"></script>
+
+{%endblock%}
+
+{% block body%}
+
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            <b-card header-tag="header" footer-tag="footer" title="Ingresa los datos de tu nuevo producto" class="my-5">
+                <template #header>
+                    <h5>Editar producto</h5>
+                </template>
+                <b-form method="POST" action="/editar_producto/{{item.id}}" enctype="multipart/form-data">
+                    <label for="Descripcion">Descripcion</label>
+                    <b-form-input size="md" id="Descripcion" name="descripcion" maxlength="20" value="{{item.descripcion}}" type="text" required placeholder="Ingresa la descripcion" class="my-2"></b-form-input>
+                    <label for="stock">Stock</label>
+                    <b-form-input size="md" id="stock" name="stock" maxlength="30"  value="{{item.stock}}" type="number" required placeholder="Ingresa el stock disponible" class="my-2"></b-form-input>
+                    <label for="precio">Precio ($)</label>
+                    <b-form-input size="md" id="precio" name="precio" maxlength="15"  value="{{item.precio}}" type="number" required placeholder="Ingresa el precio" class="my-2"></b-form-input>
+                    <label for="tiempoEnvio">Tiempo de Envio</label>
+                    <b-form-input size="md" id="tiempoEnvio" name="tiempoEnvio" maxlength="50" value="{{item.tiempoEnvio}}" type="text" required placeholder="Ingresa el tiempo de envio" class="my-2"></b-form-input>
+                    <label for="costoEnvio">Costo del Envio ($)</label>
+                    <b-form-input size="md" id="costoEnvio" name="costoEnvio" maxlength="150" value="{{item.costoEnvio}}" type="text" required placeholder="Ingresa el costo de envio" class="my-2"></b-form-input>
+                    <label for="categoria">Categoria</label>
+                    <div class="d-flex flex-row">
+                        <b-form-select id="categoria" name="categoria" value="{{item.categoria}}" :options="categorias" class="my-2" required></b-form-select>
+                        <b-button @click="insertForm" variant="primary" class="ml-2 my-2" v-b-modal.modal><i class="fas fa-plus"></i></b-button>
+                    </div>
+                    <label for="foto">Fotos del producto</label>
+                    <b-form-file size="md" id="foto" name="foto" placeholder="Elige las fotos" class="my-2" multiple></b-form-file>
+                    <br>
+                    <br>
+                    <a class="btn btn-secondary" href="/productos">Cancelar</a>
+                    <b-button size="md" variant="primary" name="submit" type="submit" class="my-2">Actualizar</b-button>
+                </b-form>
+            </b-card>
+            <b-modal id="modal" ref="modal" @hidden="reset" @ok="save"> 
+                <template slot="modal-header">
+                <h3>{{formTitle}}</h3>
+                </template>
+                <b-form @submit="save" @reset="reset">
+                    <b-form-group id="input-title" label="Descripcion de la categoria" label-for="categoria_producto">
+                        <b-form-input id="categoria_producto" v-model="form2.descripcion" type="text" required
+                            placeholder="Inserta la descripcion del producto"></b-form-input>
+                    </b-form-group>
+                </b-form> 
+                <template slot="modal-footer" slot-scope="{ ok, cancel }">
+                    <b-button size="sm" variant="danger" @click="cancel()">Cancelar</b-button>
+                    <b-button size="sm" variant="success" @click="ok()">Guardar</b-button>
+                </template>
+            </b-modal>
+
+        </div>
+        <div class="col">
+            {% include "message.html" %}
+        </div>
+    </div>
+</div>
+
+{%endblock%}

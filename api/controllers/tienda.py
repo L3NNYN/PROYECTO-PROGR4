@@ -2,6 +2,7 @@ from flask import jsonify, request, render_template, redirect, session, flash
 from init import app
 from init import mysql
 
+#Metodo para obtener la tienda, por id o si la el usuario es tipo tienda
 @app.route('/tienda')
 @app.route('/tienda/<int:id>', methods=['GET'])
 def tienda(id=None):
@@ -11,11 +12,9 @@ def tienda(id=None):
         
         if 'usuario' in session:
             if id == None:
-                cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email FROM tbl_usuarios t WHERE t.estado = 'A' AND t.id_usr = %s", (session['id'],))
-                # cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email, (SUM(c.calificacion) / COUNT(c.calificacion)) FROM tbl_usuarios t LEFT JOIN calificaciontienda c ON c.id_tienda = t.id_usr WHERE t.estado = 'A' AND t.id_usr = %s", (session['id'],))
+                cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email, p.descripcion FROM tbl_usuarios t LEFT JOIN tbl_paises p ON p.id_pais = t.id_pais WHERE t.estado = 'A' AND t.id_usr = %s", (session['id'],))
             else:
-                # cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email, (SUM(c.calificacion) / COUNT(c.calificacion)) FROM tbl_usuarios t LEFT JOIN calificaciontienda c ON c.id_tienda = t.id_usr WHERE t.estado = 'A' AND t.id_usr = %s", (id,))
-                cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email FROM tbl_usuarios t WHERE t.estado = 'A' AND t.id_usr = %s", (id,))
+                cur.execute("SELECT t.nombre, t.direccion, t.foto, t.email, p.descripcion FROM tbl_usuarios t LEFT JOIN tbl_paises p ON p.id_pais = t.id_pais WHERE t.estado = 'A' AND t.id_usr = %s", (id,))
 
             row = cur.fetchone()
             data = []
@@ -23,9 +22,9 @@ def tienda(id=None):
             if session['id'] == id or id == None: profile = 'T' #si esta accediendo desde la navbar o desde el inicio
             
             if profile is 'T':
-                data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'id': session['id']})
+                data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'pais':row[4],'id': session['id']})
             else:
-                data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'id': id})
+                data.append({'nombre': row[0], 'direccion': row[1], 'foto': row[2], 'email': row[3], 'pais':row[4], 'id': id})
 
 
         return render_template("views/tienda.html", item=data, profile=profile)
@@ -35,7 +34,7 @@ def tienda(id=None):
     finally:
         cur.close()
 
-#Productos mas vendidos y todos los productos de una tienda
+#Todos los productos de una tienda
 @app.route('/tienda_api')
 @app.route('/tienda_api/<int:id>')
 def getProductos(id=None):
@@ -64,6 +63,7 @@ def getProductos(id=None):
     finally:
         cur.close()
 
+#Funcion API para seguir o dejar de seguir a una tienda
 @app.route('/seguimiento_api/<int:id>', methods=['POST', 'GET'])
 def seguimiento(id=None):
     try:

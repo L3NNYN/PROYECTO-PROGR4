@@ -42,7 +42,8 @@ window.onload = function () {
                     tiendas:['nombre', 'email'],
                     productos:['descripcion', 'precio','categoria', 'tienda']
                 },
-                ofertas:['descripcion', 'categoria', 'precio', 'publicacion']
+                ofertas:['descripcion', 'categoria', 'precio', 'publicacion'],
+                ventas:['descripcion', 'stock', 'publicacion', 'precio', 'tiempo envio', 'costo envio', 'categoria']
             }
 
         },
@@ -64,7 +65,9 @@ window.onload = function () {
                 }).catch(error => { alertify.error(error); });
             },
             getVentas(){
-
+                axios.get(apiURL('reporte_ventas_api')).then((response) => {
+                    this.reportes.ventas = response.data;
+                }).catch(error => { alertify.error(error); });
             },
             getCompras(){
                 axios.post(apiURL('reporte_compras_api'), JSON.stringify({'fechaInicio':this.fechaInicio, 'fechaFin':this.fechaFin}))

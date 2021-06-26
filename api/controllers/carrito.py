@@ -53,6 +53,9 @@ def carrito_api():
                                 prod_evaluados.append(i['id'])
                                 cur.execute("INSERT INTO productos ( id_comp, id_prod, cantidad) VALUES (%s, %s, 1)", (_idcompra, i['id'], ))
                                 conn.commit()
+
+                                cur.execute("INSERT INTO notificaciones ( id_prod, id_usr, visto) VALUES (%s, %s, 'N')", (i['id'], _tienda, ))
+                                conn.commit()
                             else:
                                 cur.execute("UPDATE productos SET cantidad = (cantidad + 1) WHERE id_comp =%s AND id_prod = %s", (_idcompra, i['id'], ))
                                 conn.commit()

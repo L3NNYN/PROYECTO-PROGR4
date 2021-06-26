@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{%block title%}Perfil{%endblock%}
+{%block title%}Editar perfil{%endblock%}
 
 {%block head%}
 <script src="{{ url_for('static', filename = '/js/signup.js') }}"></script>
@@ -37,7 +37,7 @@
                                 <label for="pais">Pais</label>
                                 <b-form-select id="pais" name="pais" value="{{item.pais}}" :options="paises" class="my-2" required></b-form-select>
                                 <label for="foto">Foto</label>
-                                <b-form-file size="md" id="foto" name="foto" value="{{item.foto}}" placeholder="Elige tu foto" class="my-2"></b-form-file>
+                                <b-form-file size="md" id="foto" name="foto" placeholder="Elige tu foto" class="my-2"></b-form-file>
                                 
                                 {%if session.tipo_usuario == 'C' %}
                                 <b-button href="/perfil" size="md" variant="secondary badge-pill" class="my-2">Cancelar</b-button>

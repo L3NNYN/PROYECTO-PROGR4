@@ -12,7 +12,7 @@ def redes():
 
 #Mantenimiento de redes sociales 
 @app.route('/redes_sociales_api', methods=['GET', 'POST', 'PUT'])
-@app.route('/redes_sociales_api/<int:id>', methods=['DELETE'])
+@app.route('/redes_sociales_api/<int:id>', methods=['GET','DELETE'])
 def redes_api(id=None):
     try:
         conn = mysql.connect()
@@ -20,10 +20,14 @@ def redes_api(id=None):
 
         if not 'usuario' in session:
             return jsonify('Deberias loguearte')
-        elif session['tipo_usuario'] == 'T':
+        else :
 
             if request.method == 'GET':
-                cur.execute("SELECT t.id_reds, t.descripcion FROM tbl_redessociales t WHERE t.usr_id = %s", (session['id'], ))
+                if id == None:
+                    cur.execute("SELECT t.id_reds, t.descripcion FROM tbl_redessociales t WHERE t.usr_id = %s", (session['id'], ))
+                else:
+                    cur.execute("SELECT t.id_reds, t.descripcion FROM tbl_redessociales t WHERE t.usr_id = %s", (id, ))
+
                 rows = cur.fetchall()
                 json_items = []
                 content = {}
@@ -55,9 +59,7 @@ def redes_api(id=None):
             elif request.method == 'DELETE':
                 cur.execute("DELETE FROM tbl_redessociales WHERE id_reds = %s", (id,))
                 conn.commit()
-                return jsonify('Red social borrada correctamente correctamente.')
-        else:
-            return jsonify('No eres una tienda')
+                return jsonify('Red social borrada.')
 
     except Exception as e:
         print(e)

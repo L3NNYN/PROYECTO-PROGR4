@@ -1,0 +1,36 @@
+{% extends "layout.html"%}
+
+{%block title%}Notificaciones{%endblock%}
+
+{%block head%}
+<script src="{{ url_for('static', filename = '/js/notificaciones.js') }}"></script>
+{%endblock%}
+
+{%block body%}
+{% include "navbar.html" %}
+<div class="d-flex flex-column text-center">
+    <div class="col"></div>
+    <div class="col d-flex flex-column text-center mt-5">
+        <div v-if="notificaciones != '' ">
+            <b-button @click="save" variant="primary badge-pill"><i class="fas fa-check"></i> Marcar como leído</b-button>
+            <br>
+            <small>Esto hará que limpies tu feed de notificaciones</small>
+            {%if session.tipo_usuario  == 'C' %}
+                <h5 class="my-5">Productos de tu lista de deseos que tuvieron modificaciones recientemente: </h5>
+            {%else%}
+                <h4 class="my-5">Productos que has vendido recientemente: </h4>
+            {%endif%}
+            <b-card v-for="item in notificaciones" class="m-2">
+                <b-card-text class="">
+                    <div class="text-center">
+                        <b-link :href="'/producto/' +item.id"><h5>[[item.descripcion]]</h5></b-link>
+                        <h6>Precio: $[[item.precio]]</h6>
+                    </div>
+                </b-card-text>
+            </b-card>
+        </div>
+        <h3 v-else>No hay notificaciones por el momento</h3>
+    </div>
+    <div class="col"></div>
+</div>
+{%endblock%}

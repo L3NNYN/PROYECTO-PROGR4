@@ -75,7 +75,7 @@ def updateMonto():
             cur.execute("UPDATE tbl_metodosdepago SET saldo = (saldo - %s) WHERE id_pago = %s", (_monto,_id,))
             conn.commit()
 
-            return jsonify('Saldo de tu metodo de pago actualizado correctamente')
+            return jsonify('Saldo de tu metodo de pago actualizado')
         else:
             return jsonify('Registrate como comprador')
     except Exception as e:
